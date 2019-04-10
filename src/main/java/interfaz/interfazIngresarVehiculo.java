@@ -33,6 +33,12 @@ public class interfazIngresarVehiculo extends javax.swing.JFrame {
     int cont;
     byte[] icono;
     Blob blob;
+    static int estiloCase;
+    static int estadoCase;
+    static int sedeCase;
+    static int tipoCase;
+    static int marcaCase;
+    static int colorCase;
 
     public interfazIngresarVehiculo() {
         initComponents();
@@ -52,7 +58,7 @@ public class interfazIngresarVehiculo extends javax.swing.JFrame {
         res = Conexiones.Conexion.consulta("select * from esquema.Estilo");
         try {
             while (res.next()) {
-                entradaEstilo.addItem(res.getString(1));
+                entradaEstilo.addItem(res.getString(2));
             }
         } catch (SQLException e) {
         }
@@ -62,7 +68,7 @@ public class interfazIngresarVehiculo extends javax.swing.JFrame {
         res = Conexiones.Conexion.consulta("select * from esquema.Sede");
         try {
             while (res.next()) {
-                entradaSede.addItem(res.getString(1));
+                entradaSede.addItem(res.getString(2));
             }
         } catch (SQLException e) {
         }
@@ -72,7 +78,7 @@ public class interfazIngresarVehiculo extends javax.swing.JFrame {
         res = Conexiones.Conexion.consulta("select * from esquema.TipoTransmision");
         try {
             while (res.next()) {
-                entradaTransmision.addItem(res.getString(1));
+                entradaTransmision.addItem(res.getString(2));
             }
         } catch (SQLException e) {
         }
@@ -82,7 +88,7 @@ public class interfazIngresarVehiculo extends javax.swing.JFrame {
         res = Conexiones.Conexion.consulta("select * from esquema.Marca");
         try {
             while (res.next()) {
-                entradaMarca.addItem(res.getString(1));
+                entradaMarca.addItem(res.getString(2));
             }
         } catch (SQLException e) {
         }
@@ -92,7 +98,7 @@ public class interfazIngresarVehiculo extends javax.swing.JFrame {
         res = Conexiones.Conexion.consulta("select * from esquema.Color");
         try {
             while (res.next()) {
-                entradaColor.addItem(res.getString(1));
+                entradaColor.addItem(res.getString(2));
             }
         } catch (SQLException e) {
         }
@@ -411,13 +417,180 @@ public class interfazIngresarVehiculo extends javax.swing.JFrame {
             if (cont >= 1) {
                 JOptionPane.showMessageDialog(this, "Este elemento ya existe", "Informacion", JOptionPane.INFORMATION_MESSAGE);
             } else {
+                switch (entradaEstilo.getSelectedItem().toString()) {
+                    case "Compacto":
+                        estiloCase = 1;
+                        break;
+                    case "Pickup":
+                        estiloCase = 2;
+                        break;
+                    case "Intermedio":
+                        estiloCase = 3;
+                        break;
+                    case "SUV":
+                        estiloCase = 4;
+                        break;
+                    case "Mini-van":
+                        estiloCase = 5;
+                        break;
+                    case "Convertible":
+                        estiloCase = 6;
+                        break;
+                    case "Económico":
+                        estiloCase = 7;
+                        break;
+                }
+                switch (entradaSede.getSelectedItem().toString()) {
+                    case "Escazú":
+                        sedeCase = 1;
+                        break;
+                    case "Moravia":
+                        sedeCase = 2;
+                        break;
+                    case "Peréz Zeledón":
+                        sedeCase = 3;
+                        break;
+                    case "Grecia":
+                        sedeCase = 4;
+                        break;
+                    case "Paraíso":
+                        sedeCase = 5;
+                        break;
+                    case "Heredia":
+                        sedeCase = 6;
+                        break;
+                    case "Belén":
+                        sedeCase = 7;
+                        break;
+                    case "Liberia":
+                        sedeCase = 8;
+                        break;
+                    case "Quepos":
+                        sedeCase = 9;
+                        break;
+                    case "Limón":
+                        sedeCase = 10;
+                        break;
+                    case "Cartago":
+                        sedeCase = 11;
+                        break;
+                    case "San Pedro":
+                        sedeCase = 12;
+                        break;
+                    case "San Carlos":
+                        sedeCase = 13;
+                        break;
+                    case "Alajuela":
+                        sedeCase = 14;
+                        break;
+                    case "Zapote":
+                        sedeCase = 15;
+                        break;
+                    case "Tres Ríos":
+                        sedeCase = 16;
+                        break;
+                    case "Golfito":
+                        sedeCase = 17;
+                        break;
+                    case "Tortuguero":
+                        sedeCase = 18;
+                        break;
+                    case "Santa Cruz":
+                        sedeCase = 19;
+                        break;
+                    case "Desamparados":
+                        sedeCase = 20;
+                        break;
+                    case "San José":
+                        sedeCase = 21;
+                        break;
+                    case "Tarrazú":
+                        sedeCase = 22;
+                        break;
+                }
+                switch (entradaTransmision.getSelectedItem().toString()) {
+                    case "Manual":
+                        tipoCase = 1;
+                        break;
+                    case "Automático":
+                        tipoCase = 2;
+                        break;
+                    case "Híbrido":
+                        tipoCase = 3;
+                        break;
+                }
+                switch (entradaMarca.getSelectedItem().toString()) {
+                    case "Toyota":
+                        marcaCase = 1;
+                        break;
+                    case "Suzuki":
+                        marcaCase = 2;
+                        break;
+                    case "Mitsubishi":
+                        marcaCase = 3;
+                        break;
+                    case "BMW":
+                        marcaCase = 4;
+                        break;
+                    case "Ford":
+                        marcaCase = 5;
+                        break;
+                    case "Volkswagen":
+                        marcaCase = 6;
+                        break;
+                    case "Audi":
+                        marcaCase = 7;
+                        break;
+                    case "Nissan":
+                        marcaCase = 8;
+                        break;
+                    case "Jeep":
+                        marcaCase = 9;
+                        break;
+                    case "Volvo":
+                        marcaCase = 10;
+                        break;
+                }
+                switch (entradaColor.getSelectedItem().toString()) {
+                    case "Rojo":
+                        colorCase = 1;
+                        break;
+                    case "Verde":
+                        colorCase = 2;
+                        break;
+                    case "Azul":
+                        colorCase = 3;
+                        break;
+                    case "Negro":
+                        colorCase = 4;
+                        break;
+                    case "Gris":
+                        colorCase = 5;
+                        break;
+                    case "Blanco":
+                        colorCase = 6;
+                        break;
+                    case "Amarillo":
+                        colorCase = 7;
+                        break;
+                    case "Dorado":
+                        colorCase = 8;
+                        break;
+                    case "Cafe":
+                        colorCase = 9;
+                        break;
+                    case "Morado":
+                        colorCase = 10;
+                        break;
+                }
                 System.out.println("Llega aca");
                 try {
                     blob = new javax.sql.rowset.serial.SerialBlob(icono);
                     Procedimientos.ingresoVehiculo(entradaPlaca.getText(), entradaVIN.getText(), entradaCosto.getText(), entradaAño.getText(), entradaCapacidad.getText(), entradaPuertas.getText(),
-                            entradaMaletas.getText(), entradaMPG.getText(), entradaKilometraje.getText(), blob, entradaTransmision.getSelectedItem().toString(), entradaColor.getSelectedItem().toString(),
-                            entradaMarca.getSelectedItem().toString(), "1", entradaEstilo.getSelectedItem().toString(), entradaSede.getSelectedItem().toString());
+                            entradaMaletas.getText(), entradaMPG.getText(), entradaKilometraje.getText(), blob, Integer.toString(tipoCase), Integer.toString(colorCase),
+                            Integer.toString(marcaCase), "1", Integer.toString(estiloCase), Integer.toString(sedeCase));
                 } catch (SQLException e) {
+                    System.out.println(e);
                 }
                 JOptionPane.showMessageDialog(this, "Los datos han sido guardados correctamente");
             }

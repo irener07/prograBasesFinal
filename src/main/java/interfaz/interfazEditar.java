@@ -35,6 +35,12 @@ public class interfazEditar extends javax.swing.JFrame {
     byte[] data;
     Blob blob;
     String filename = null;
+    static int estiloCase;
+    static int estadoCase;
+    static int sedeCase;
+    static int tipoCase;
+    static int marcaCase;
+    static int colorCase;
 
     public interfazEditar() {
         initComponents();
@@ -56,7 +62,7 @@ public class interfazEditar extends javax.swing.JFrame {
         res = Conexion.consulta("select * from esquema.Estilo");
         try {
             while (res.next()) {
-                entradaEstiloE.addItem(res.getString(1));
+                entradaEstiloE.addItem(res.getString(2));
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -67,7 +73,7 @@ public class interfazEditar extends javax.swing.JFrame {
         res = Conexion.consulta("select * from esquema.Estado");
         try {
             while (res.next()) {
-                entradaEstadoE.addItem(res.getString(1));
+                entradaEstadoE.addItem(res.getString(2));
             }
         } catch (SQLException e) {
         }
@@ -77,7 +83,7 @@ public class interfazEditar extends javax.swing.JFrame {
         res = Conexion.consulta("select * from esquema.Color");
         try {
             while (res.next()) {
-                entradaColorE.addItem(res.getString(1));
+                entradaColorE.addItem(res.getString(2));
             }
         } catch (SQLException e) {
         }
@@ -87,7 +93,7 @@ public class interfazEditar extends javax.swing.JFrame {
         res = Conexion.consulta("select * from esquema.Marca");
         try {
             while (res.next()) {
-                entradaMarcaE.addItem(res.getString(1));
+                entradaMarcaE.addItem(res.getString(2));
             }
         } catch (SQLException e) {
         }
@@ -97,7 +103,7 @@ public class interfazEditar extends javax.swing.JFrame {
         res = Conexion.consulta("select * from esquema.Sede");
         try {
             while (res.next()) {
-                entradaSedeE.addItem(res.getString(1));
+                entradaSedeE.addItem(res.getString(2));
             }
         } catch (SQLException e) {
         }
@@ -107,7 +113,7 @@ public class interfazEditar extends javax.swing.JFrame {
         res = Conexion.consulta("select * from esquema.TipoTransmision");
         try {
             while (res.next()) {
-                entradaTipoE.addItem(res.getString(1));
+                entradaTipoE.addItem(res.getString(2));
             }
         } catch (SQLException e) {
         }
@@ -439,13 +445,190 @@ public class interfazEditar extends javax.swing.JFrame {
                 || entradaMaletasE.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Ingrese todos los datos", "Información", JOptionPane.INFORMATION_MESSAGE);
         } else {
+            switch(entradaEstiloE.getSelectedItem().toString()){
+                case "Compacto": 
+                    estiloCase=1;
+                    break;
+                case "Pickup": 
+                    estiloCase=2;
+                    break;    
+                case "Intermedio": 
+                    estiloCase=3;
+                    break;    
+                case "SUV": 
+                    estiloCase=4;
+                    break;
+                case "Mini-van": 
+                    estiloCase=5;
+                    break;
+                case "Convertible": 
+                    estiloCase=6;
+                    break;
+                case "Económico": 
+                    estiloCase=7;
+                    break;
+            }
+            switch(entradaEstadoE.getSelectedItem().toString()){
+                case "Activo": 
+                    estadoCase=1;
+                    break;
+                case "Mantenimiento": 
+                    estadoCase=2;
+                    break;    
+                case "Inactivo": 
+                    estadoCase=3;
+                    break;       
+            }
+            switch(entradaSedeE.getSelectedItem().toString()){
+                case "Escazú": 
+                    sedeCase=1;
+                    break;
+                case "Moravia": 
+                    sedeCase=2;
+                    break;    
+                case "Peréz Zeledón": 
+                    sedeCase=3;
+                    break;    
+                case "Grecia": 
+                    sedeCase=4;
+                    break;
+                case "Paraíso": 
+                    sedeCase=5;
+                    break;
+                case "Heredia": 
+                    sedeCase=6;
+                    break;
+                case "Belén": 
+                    sedeCase=7;
+                    break;
+                case "Liberia": 
+                    sedeCase=8;
+                    break;
+                case "Quepos": 
+                    sedeCase=9;
+                    break;
+                case "Limón": 
+                    sedeCase=10;
+                    break;
+                case "Cartago": 
+                    sedeCase=11;
+                    break;
+                case "San Pedro": 
+                    sedeCase=12;
+                    break;
+                case "San Carlos": 
+                    sedeCase=13;
+                    break;
+                case "Alajuela": 
+                    sedeCase=14;
+                    break;
+                case "Zapote": 
+                    sedeCase=15;
+                    break;
+                case "Tres Ríos": 
+                    sedeCase=16;
+                    break;
+                case "Golfito": 
+                    sedeCase=17;
+                    break;
+                case "Tortuguero": 
+                    sedeCase=18;
+                    break;
+                case "Santa Cruz": 
+                    sedeCase=19;
+                    break;
+                case "Desamparados": 
+                    sedeCase=20;
+                    break;
+                case "San José": 
+                    sedeCase=21;
+                    break;
+                case "Tarrazú": 
+                    sedeCase=22;
+                    break;
+            }
+            switch(entradaTipoE.getSelectedItem().toString()){
+                case "Manual": 
+                    tipoCase=1;
+                    break;
+                case "Automático": 
+                    tipoCase=2;
+                    break;    
+                case "Híbrido": 
+                    tipoCase=3;
+                    break;       
+            }
+            switch(entradaMarcaE.getSelectedItem().toString()){
+                case "Toyota": 
+                    marcaCase=1;
+                    break;
+                case "Suzuki": 
+                    marcaCase=2;
+                    break;    
+                case "Mitsubishi": 
+                    marcaCase=3;
+                    break;
+                case "BMW": 
+                    marcaCase=4;
+                    break; 
+                case "Ford": 
+                    marcaCase=5;
+                    break;
+                case "Volkswagen": 
+                    marcaCase=6;
+                    break;
+                case "Audi": 
+                    marcaCase=7;
+                    break;
+                case "Nissan": 
+                    marcaCase=8;
+                    break;
+                case "Jeep": 
+                    marcaCase=9;
+                    break;
+                case "Volvo": 
+                    marcaCase=10;
+                    break;
+            }
+            switch(entradaColorE.getSelectedItem().toString()){
+                case "Rojo": 
+                    colorCase=1;
+                    break;
+                case "Verde": 
+                    colorCase=2;
+                    break;    
+                case "Azul": 
+                    colorCase=3;
+                    break;
+                case "Negro": 
+                    colorCase=4;
+                    break; 
+                case "Gris": 
+                    colorCase=5;
+                    break;
+                case "Blanco": 
+                    colorCase=6;
+                    break;
+                case "Amarillo": 
+                    colorCase=7;
+                    break;
+                case "Dorado": 
+                    colorCase=8;
+                    break;
+                case "Cafe": 
+                    colorCase=9;
+                    break;
+                case "Morado": 
+                    colorCase=10;
+                    break;
+            }
             try {
 
                 PreparedStatement pps = Conexion.getConexion().prepareStatement("update esquema.Vehiculo set numeroVIN='" + entradaVinE.getText() + "', costoDia='" + entradaCostoE.getText()
                         + "', año='" + entradaAñoE.getText() + "', capacidadPersonas='" + entradaCapacidadE.getText() + "', numeroPuertas='" + entradaPuertasE.getText() + "', cantidadMaletas='" + entradaMaletasE.getText()
-                        + "', mpg='" + entradasMpgE.getText() + "', kilometraje='" + entradaKiloE.getText() + "', foto= CONVERT(VARBINARY(max), '"+data+"'), idTransmision='" + entradaTipoE.getSelectedItem().toString() + "', idColor='" + entradaColorE.getSelectedItem().toString()
-                        + "', idMarca='" + entradaMarcaE.getSelectedItem().toString() + "', idEstado='" + entradaEstadoE.getSelectedItem().toString() + "', idEstilo='" + entradaEstiloE.getSelectedItem().toString()
-                        + "', idSede='" + entradaSedeE.getSelectedItem().toString() + "' where placa ='" + entradaPlacaEditar.getText() + "'");
+                        + "', mpg='" + entradasMpgE.getText() + "', kilometraje='" + entradaKiloE.getText() + "', foto= CONVERT(VARBINARY(max), '" + data + "'), idTransmision='" + Integer.toString(tipoCase) + "', idColor='" + Integer.toString(colorCase)
+                        + "', idMarca='" + Integer.toString(marcaCase) + "', idEstado='" + Integer.toString(estadoCase) + "', idEstilo='" + Integer.toString(estiloCase)
+                        + "', idSede='" + Integer.toString(sedeCase) + "' where placa ='" + entradaPlacaEditar.getText() + "'");
                 pps.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Los datos ha sido modificados");
 

@@ -196,101 +196,102 @@ public class interfazMapa extends javax.swing.JFrame {
             if (cont >= 0) {
                 try {
                     res = Conexion.consulta("Select * from esquema.Reserva where idReserva='" + Integer.parseInt(idreserva) + "'");
-                    
+
                     while (res.next()) {
                         idrecorrido = Integer.toString(res.getInt(10));
-                        
-                        if (idrecorrido == null) {
-                            JOptionPane.showMessageDialog(this, "No se ha podido verificar el recorrido de la reserva", "ERROR", JOptionPane.ERROR_MESSAGE);
-                        } else {
-                            panelMapa.repaint();
-                            JFileChooser elegida = new JFileChooser();
-                            FileNameExtensionFilter fil = new FileNameExtensionFilter("CSV", "csv");
-                            elegida.setFileFilter(fil);
-                            elegida.showOpenDialog(null);
-                            File f = elegida.getSelectedFile();
-                            CSVReader csvReader = null;
-                            
-                            try {
-                                csvReader = new CSVReader(new FileReader(f), ',', '\n', 0);
-                                
-                                List<String[]> rows = new ArrayList<>();
-                                rows = csvReader.readAll();
-                                String coor = "";
-                                
-                                for (String[] row : rows) {
-                                    coor = coor + "+" + (Arrays.toString(row));
-                                }
-                                
-                                coor = coor.replace("+", "").replace("[", "").replace("]", ",");
-                                String[] parts = coor.split(",");
-                                
-                                if (parts.length < 5) {
-                                    nombreArchivo = f.getName();
-                                    nombreArchivo = nombreArchivo.replaceAll(".csv", "");
-                                    System.out.println("-" + nombreArchivo);
-                                    //  SimpleDateFormat fecha = new SimpleDateFormat("yyyy/MM/dd");
-                                    //    fechaE = (Date) fecha.parse(nombreArchivo);
-                                    //        fechaE = new java.sql.Date(date.get());
-                                    //  System.out.println(fechaE.getDate());
-                                    puntoALat = Double.parseDouble(parts[0].replace(" ", ""));
-                                    puntoALong = Double.parseDouble(parts[1].replace(" ", ""));
-                                    puntoBLat = Double.parseDouble(parts[2].replace(" ", ""));
-                                    puntoBLong = Double.parseDouble(parts[3].replace(" ", ""));
-                                    
-                                    String ALat = (parts[0].replace(" ", ""));
-                                    String ALong = (parts[1].replace(" ", ""));
-                                    String BLat = (parts[2].replace(" ", ""));
-                                    String BLong = (parts[3].replace(" ", ""));
-                                    
-                                    try {
-                                        Maps.routeMap(puntoALat, puntoALong, puntoBLat, puntoBLong);
-                                    } catch (ApiException | InterruptedException | URISyntaxException ex) {
-                                        Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                    try {
-                                        browser.loadURL(Maps.routeMap(puntoALat, puntoALong, puntoBLat, puntoBLong));
-                                    } catch (ApiException | InterruptedException | URISyntaxException ex) {
-                                        Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                    browser.setBounds(1, 1, panelMapa.getWidth(), panelMapa.getHeight());
-                                    panelMapa.add(browser);
-                                    try {
-                                        System.out.println(ALat + "\n" + ALong + "\n" + BLat + "\n" + BLong + "\n");
-                                        Procedimientos.ingresarRecorrido(ALat, ALong, BLat, BLong);
-                                    } catch (SQLException | ParseException ex) {
-                                        Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                    
-                                    res = Conexion.consulta("select IDENT_CURRENT('esquema.Recorrido')");
-                                    while (res.next()) {
-                                        idrecorrido = Integer.toString(res.getInt(1));
-                                    }
-                                    
-                                    PreparedStatement pps = Conexion.getConexion().prepareStatement("update esquema.Reserva set idRecorrido='" + idrecorrido + "' where idReserva ='" + idReserva.getText() + "'");
-                                    pps.executeUpdate();
-                                    JOptionPane.showMessageDialog(null, "Los datos ha sido modificados");
-                                    
-                                } else {
-                                    JOptionPane.showMessageDialog(this, "No se ha cargado el archivo CSV", "ERROR", JOptionPane.ERROR_MESSAGE);
-                                }
-                                
-                            } catch (HeadlessException | IOException | NumberFormatException ee) {
-                            } catch (SQLException ex) {
-                                Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
-                            } finally {
-                                try {
-                                    //closing the reader
-                                    csvReader.close();
-                                } catch (Exception ee) {
-                                    ee.printStackTrace();
-                                }
+                    }
+                    if (idrecorrido == null) {
+                        JOptionPane.showMessageDialog(this, "No se ha podido verificar el recorrido de la reserva", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        panelMapa.repaint();
+                        JFileChooser elegida = new JFileChooser();
+                        FileNameExtensionFilter fil = new FileNameExtensionFilter("CSV", "csv");
+                        elegida.setFileFilter(fil);
+                        elegida.showOpenDialog(null);
+                        File f = elegida.getSelectedFile();
+                        CSVReader csvReader = null;
+
+                        try {
+                            csvReader = new CSVReader(new FileReader(f), ',', '\n', 0);
+
+                            List<String[]> rows = new ArrayList<>();
+                            rows = csvReader.readAll();
+                            String coor = "";
+
+                            for (String[] row : rows) {
+                                coor = coor + "+" + (Arrays.toString(row));
                             }
-                        }}
+
+                            coor = coor.replace("+", "").replace("[", "").replace("]", ",");
+                            String[] parts = coor.split(",");
+
+                            if (parts.length < 5) {
+                                nombreArchivo = f.getName();
+                                nombreArchivo = nombreArchivo.replaceAll(".csv", "");
+                                System.out.println("-" + nombreArchivo);
+                                //  SimpleDateFormat fecha = new SimpleDateFormat("yyyy/MM/dd");
+                                //    fechaE = (Date) fecha.parse(nombreArchivo);
+                                //        fechaE = new java.sql.Date(date.get());
+                                //  System.out.println(fechaE.getDate());
+                                puntoALat = Double.parseDouble(parts[0].replace(" ", ""));
+                                puntoALong = Double.parseDouble(parts[1].replace(" ", ""));
+                                puntoBLat = Double.parseDouble(parts[2].replace(" ", ""));
+                                puntoBLong = Double.parseDouble(parts[3].replace(" ", ""));
+
+                                String ALat = (parts[0].replace(" ", ""));
+                                String ALong = (parts[1].replace(" ", ""));
+                                String BLat = (parts[2].replace(" ", ""));
+                                String BLong = (parts[3].replace(" ", ""));
+
+                                try {
+                                    Maps.routeMap(puntoALat, puntoALong, puntoBLat, puntoBLong);
+                                } catch (ApiException | InterruptedException | URISyntaxException ex) {
+                                    Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                try {
+                                    browser.loadURL(Maps.routeMap(puntoALat, puntoALong, puntoBLat, puntoBLong));
+                                } catch (ApiException | InterruptedException | URISyntaxException ex) {
+                                    Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                browser.setBounds(1, 1, panelMapa.getWidth(), panelMapa.getHeight());
+                                panelMapa.add(browser);
+                                try {
+                                    System.out.println(ALat + "\n" + ALong + "\n" + BLat + "\n" + BLong + "\n");
+                                    Procedimientos.ingresarRecorrido(ALat, ALong, BLat, BLong);
+                                } catch (SQLException | ParseException ex) {
+                                    Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                                res = Conexion.consulta("select IDENT_CURRENT('esquema.Recorrido')");
+                                while (res.next()) {
+                                    idrecorrido = Integer.toString(res.getInt(1));
+                                }
+
+                                PreparedStatement pps = Conexion.getConexion().prepareStatement("update esquema.Reserva set idRecorrido='" + idrecorrido + "' where idReserva ='" + idReserva.getText() + "'");
+                                pps.executeUpdate();
+                                JOptionPane.showMessageDialog(null, "Los datos ha sido modificados");
+
+                            } else {
+                                JOptionPane.showMessageDialog(this, "No se ha cargado el archivo CSV", "ERROR", JOptionPane.ERROR_MESSAGE);
+                            }
+
+                        } catch (HeadlessException | IOException | NumberFormatException ee) {
+                        } catch (SQLException ex) {
+                            Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
+                        } finally {
+                            try {
+                                //closing the reader
+                                csvReader.close();
+                            } catch (Exception ee) {
+                                ee.printStackTrace();
+                            }
+                        }
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
                 }
-}}
+            }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

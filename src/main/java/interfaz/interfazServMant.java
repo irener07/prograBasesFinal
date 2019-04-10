@@ -27,7 +27,9 @@ public class interfazServMant extends javax.swing.JFrame {
      * Creates new form interfazServMant
      */
     static ResultSet res;
-    int cont;    
+    int cont;
+    static int tipoServicio;
+
     public interfazServMant() {
         initComponents();
         entradaTipoS.removeAllItems();
@@ -38,33 +40,36 @@ public class interfazServMant extends javax.swing.JFrame {
         cargarCedula();
 
     }
-    public void cargarTipo(){
+
+    public void cargarTipo() {
         res = Conexiones.Conexion.consulta("select * from esquema.TipoServicio");
-        try{
-            while(res.next()){
-                entradaTipoS.addItem(res.getString(1));
+        try {
+            while (res.next()) {
+                entradaTipoS.addItem(res.getString(2));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }
-    public void cargarPlacas(){
+
+    public void cargarPlacas() {
         res = Conexiones.Conexion.consulta("select * from esquema.Vehiculo");
-        try{
-            while(res.next()){
+        try {
+            while (res.next()) {
                 entradaPlaca.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }
-    public void cargarCedula(){
+
+    public void cargarCedula() {
         res = Conexiones.Conexion.consulta("select * from esquema.Empresa");
-        try{
-            while(res.next()){
+        try {
+            while (res.next()) {
                 entradaEmpresa.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -77,7 +82,6 @@ public class interfazServMant extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -85,12 +89,10 @@ public class interfazServMant extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        entradaServicio = new javax.swing.JTextField();
         entradaMonto = new javax.swing.JTextField();
         entradaDetalle = new javax.swing.JTextField();
         entradaTipoS = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         entradaEmpresa = new javax.swing.JComboBox<>();
         entradaPlaca = new javax.swing.JComboBox<>();
         entradaFechaInicio = new com.toedter.calendar.JDateChooser();
@@ -103,8 +105,6 @@ public class interfazServMant extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Servicio de Mantenimiento");
-
-        jLabel2.setText("Id Servicio:");
 
         jLabel3.setText("Monto Pago:");
 
@@ -120,25 +120,12 @@ public class interfazServMant extends javax.swing.JFrame {
 
         jLabel9.setText("Cedula Juridica:");
 
-        entradaServicio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                entradaServicioActionPerformed(evt);
-            }
-        });
-
         entradaTipoS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButton1.setText("Registrar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Limpiar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
             }
         });
 
@@ -155,7 +142,6 @@ public class interfazServMant extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5)
@@ -166,7 +152,6 @@ public class interfazServMant extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(entradaServicio)
                                         .addComponent(entradaMonto)
                                         .addComponent(entradaDetalle, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
                                     .addComponent(entradaFechaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -187,9 +172,7 @@ public class interfazServMant extends javax.swing.JFrame {
                             .addComponent(entradaFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(313, 313, 313)
-                        .addComponent(jButton1)
-                        .addGap(59, 59, 59)
-                        .addComponent(jButton2)))
+                        .addComponent(jButton1)))
                 .addContainerGap(123, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -199,9 +182,7 @@ public class interfazServMant extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
                     .addComponent(jLabel7)
-                    .addComponent(entradaServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(entradaTipoS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -230,9 +211,7 @@ public class interfazServMant extends javax.swing.JFrame {
                             .addComponent(entradaEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(entradaPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(19, 19, 19)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                .addComponent(jButton1)
                 .addContainerGap(37, Short.MAX_VALUE))
         );
 
@@ -250,48 +229,40 @@ public class interfazServMant extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void entradaServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entradaServicioActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_entradaServicioActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(entradaMonto.getText().isEmpty()||entradaDetalle.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Ingrese todos los datos","Información",JOptionPane.INFORMATION_MESSAGE);            
-        }else{
-            res = Conexiones.Conexion.consulta("Select COUNT(idServicio)from esquema.ServicioMantenimiento where idServicio='"+entradaServicio.getText()+"'");
-            try{
-                while(res.next()){
-                    cont= res.getInt(1);
-                }
-            }catch(SQLException e){
+        if (entradaMonto.getText().isEmpty() || entradaDetalle.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese todos los datos", "Información", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            switch (entradaTipoS.getSelectedItem().toString()) {
+                case "Correctivo":
+                    tipoServicio = 2;
+                    break;
+                case "Preventivo":
+                    tipoServicio = 1;
+                    break;
             }
-            if(cont>=1){
-                JOptionPane.showMessageDialog(this, "Este elemento ya existe","Informacion",JOptionPane.INFORMATION_MESSAGE);
-            }else{
-                System.out.println("Llega aca");
-                try {
-                    SimpleDateFormat fecha = new SimpleDateFormat("MM/dd/yyyy");
-                    String fechaE = fecha.format(entradaFechaInicio.getDate());
-                    SimpleDateFormat fechaF = new SimpleDateFormat("MM/dd/yyyy");
-                    String fechaEX = fechaF.format(entradaFechaFin.getDate());
-                    System.out.println(fechaE);
-                    System.out.println(fechaEX);                    
-                    Procedimientos.ingresoMantenimiento(entradaMonto.getText(),fechaE,fechaEX,entradaDetalle.getText(),entradaTipoS.getSelectedItem().toString(),entradaPlaca.getSelectedItem().toString(),entradaEmpresa.getSelectedItem().toString());
-                } catch (SQLException e) {
+            System.out.println("Llega aca");
+            try {
+                SimpleDateFormat fecha = new SimpleDateFormat("MM/dd/yyyy");
+                String fechaE = fecha.format(entradaFechaInicio.getDate());
+                SimpleDateFormat fechaF = new SimpleDateFormat("MM/dd/yyyy");
+                String fechaEX = fechaF.format(entradaFechaFin.getDate());
+                System.out.println(fechaE);
+                System.out.println(fechaEX);
+                if (entradaFechaFin.getDate().getTime() < entradaFechaInicio.getDate().getTime()) {
+                JOptionPane.showMessageDialog(null, "Verifique las fechas", "Error", JOptionPane.PLAIN_MESSAGE);
+            } else {
+                Procedimientos.ingresoMantenimiento(entradaMonto.getText(), fechaE, fechaEX, entradaDetalle.getText(), Integer.toString(tipoServicio), entradaPlaca.getSelectedItem().toString(), entradaEmpresa.getSelectedItem().toString());
+                entradaMonto.setText(null);
+                entradaDetalle.setText(null);
                 }
-                JOptionPane.showMessageDialog(this, "Los datos han sido guardados correctamente");
+            } catch (SQLException e) {
             }
-        }        
-        
+            JOptionPane.showMessageDialog(this, "Los datos han sido guardados correctamente");
+        }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        entradaMonto.setText(null);
-        entradaDetalle.setText(null);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
- 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField entradaDetalle;
@@ -300,12 +271,9 @@ public class interfazServMant extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser entradaFechaInicio;
     private javax.swing.JTextField entradaMonto;
     private javax.swing.JComboBox<String> entradaPlaca;
-    private javax.swing.JTextField entradaServicio;
     private javax.swing.JComboBox<String> entradaTipoS;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

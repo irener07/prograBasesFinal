@@ -239,7 +239,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(243, Short.MAX_VALUE)
+                .addContainerGap(271, Short.MAX_VALUE)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(entradaCedulaReserva, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -367,7 +367,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                                 .addComponent(jLabel9)
                                 .addGap(78, 78, 78)
                                 .addComponent(resultadoTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 116, Short.MAX_VALUE)
+                        .addGap(0, 144, Short.MAX_VALUE)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jLabel15)
@@ -707,7 +707,15 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             new String [] {
                 "ID", "Estilo"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane3.setViewportView(tablaEstilo);
 
         jLabel50.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -735,7 +743,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel20)
                             .addComponent(entradaPrecioMayor, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -907,7 +915,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                             .addComponent(cargarAño)
                             .addComponent(cargarVIN)
                             .addComponent(cargarCapacidad))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1077,7 +1085,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                                 .addComponent(jLabel29)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(cargarFechaR)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 219, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 247, Short.MAX_VALUE)
                         .addComponent(jButton7)
                         .addGap(134, 134, 134))))
             .addGroup(jPanel10Layout.createSequentialGroup()
@@ -1215,7 +1223,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         } else {
             java.util.Date objDate = new Date();
             System.out.println(objDate.getTime());
-            if (entradaFechaEntrega.getDate().getTime() < entradaFechaRecogida.getDate().getTime() || entradaFechaEntrega.getDate().getTime()<objDate.getTime() || entradaFechaRecogida.getDate().getTime()<objDate.getTime()) {
+            if (entradaFechaEntrega.getDate().getTime() < entradaFechaRecogida.getDate().getTime() || entradaFechaEntrega.getDate().getTime() < objDate.getTime() || entradaFechaRecogida.getDate().getTime() < objDate.getTime()) {
                 JOptionPane.showMessageDialog(null, "Verifique las fechas", "Error", JOptionPane.PLAIN_MESSAGE);
             } else {
                 try {
