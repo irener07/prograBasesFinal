@@ -1213,63 +1213,69 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         if ((entradaSedeRecogida.getSelectedItem().toString()).equals("") || (entradaSedeEntrega.getSelectedItem().toString()).equals("") || entradaFechaRecogida.getDate() == null || entradaFechaEntrega.getDate() == null) {
             JOptionPane.showMessageDialog(null, "No se han completado todos los datos", "Error", JOptionPane.PLAIN_MESSAGE);
         } else {
-            try {
-                copiaSedeRecogida = entradaSedeRecogida.getSelectedItem().toString();
-                copiaSedeEntrega = entradaSedeEntrega.getSelectedItem().toString();
-                copiaFechaRecogida = entradaFechaRecogida.getDate();
-                copiaFecha1 = new java.sql.Date(copiaFechaRecogida.getTime());
-                copiaFechaR = copiaFecha1.toString();
-                copiaFechaEntrega = entradaFechaEntrega.getDate();
-                copiaFecha2 = new java.sql.Date(copiaFechaEntrega.getTime());
-                copiaFechaE = copiaFecha2.toString();
-                SimpleDateFormat fecha1 = new SimpleDateFormat("MM/dd/yyyy");
-                fechaA = fecha1.format(entradaFechaRecogida.getDate());
-                SimpleDateFormat fecha2 = new SimpleDateFormat("MM/dd/yyyy");
-                fechaB = fecha2.format(entradaFechaEntrega.getDate());
-                Calendar hoy = Calendar.getInstance(); //obtiene la fecha actual
-                int anio = hoy.get(Calendar.YEAR);
-                int mes = hoy.get(Calendar.MONTH);
-                int dia = hoy.get(Calendar.DATE);
-                java.sql.Date copiaFechaS = new java.sql.Date(anio, mes, dia);
-                java.sql.Date copiaFecha3 = new java.sql.Date(copiaFechaS.getTime());
-                copiaFechaE = copiaFecha3.toString();
-                if (entradaWifi.isSelected()) {
-                    costoTotal = (float) (costoTotal + 15.00);
-                } else if (entradaAsistencia.isSelected()) {
-                    costoTotal = (float) (costoTotal + 3.99);
-                } else if (entradaGPS.isSelected()) {
-                    costoTotal = (float) (costoTotal + 13.99);
-                } else if (entradaAsiento.isSelected()) {
-                    costoTotal = (float) (costoTotal + 6.99);
-                } else if (entradaCobertura.isSelected()) {
-                    costoTotal = (float) (costoTotal + 12.99);
-                }
-
-                DefaultTableModel modelo4 = (DefaultTableModel) tablaEstilo.getModel();
-                modelo4.setRowCount(0);
-
-                res = Conexiones.Conexion.consulta("Select * from esquema.Estilo");
+            java.util.Date objDate = new Date();
+            System.out.println(objDate.getTime());
+            if (entradaFechaEntrega.getDate().getTime() < entradaFechaRecogida.getDate().getTime() || entradaFechaEntrega.getDate().getTime()<objDate.getTime() || entradaFechaRecogida.getDate().getTime()<objDate.getTime()) {
+                JOptionPane.showMessageDialog(null, "Verifique las fechas", "Error", JOptionPane.PLAIN_MESSAGE);
+            } else {
                 try {
-                    while (res.next()) {
-                        Vector v = new Vector();
-
-                        v.add(res.getInt(1));
-                        v.add(res.getString(2));
-                        modelo4.addRow(v);
-                        tablaEstilo.setModel(modelo4);
+                    copiaSedeRecogida = entradaSedeRecogida.getSelectedItem().toString();
+                    copiaSedeEntrega = entradaSedeEntrega.getSelectedItem().toString();
+                    copiaFechaRecogida = entradaFechaRecogida.getDate();
+                    copiaFecha1 = new java.sql.Date(copiaFechaRecogida.getTime());
+                    copiaFechaR = copiaFecha1.toString();
+                    copiaFechaEntrega = entradaFechaEntrega.getDate();
+                    copiaFecha2 = new java.sql.Date(copiaFechaEntrega.getTime());
+                    copiaFechaE = copiaFecha2.toString();
+                    SimpleDateFormat fecha1 = new SimpleDateFormat("MM/dd/yyyy");
+                    fechaA = fecha1.format(entradaFechaRecogida.getDate());
+                    SimpleDateFormat fecha2 = new SimpleDateFormat("MM/dd/yyyy");
+                    fechaB = fecha2.format(entradaFechaEntrega.getDate());
+                    Calendar hoy = Calendar.getInstance(); //obtiene la fecha actual
+                    int anio = hoy.get(Calendar.YEAR);
+                    int mes = hoy.get(Calendar.MONTH);
+                    int dia = hoy.get(Calendar.DATE);
+                    java.sql.Date copiaFechaS = new java.sql.Date(anio, mes, dia);
+                    java.sql.Date copiaFecha3 = new java.sql.Date(copiaFechaS.getTime());
+                    copiaFechaE = copiaFecha3.toString();
+                    if (entradaWifi.isSelected()) {
+                        costoTotal = (float) (costoTotal + 15.00);
+                    } else if (entradaAsistencia.isSelected()) {
+                        costoTotal = (float) (costoTotal + 3.99);
+                    } else if (entradaGPS.isSelected()) {
+                        costoTotal = (float) (costoTotal + 13.99);
+                    } else if (entradaAsiento.isSelected()) {
+                        costoTotal = (float) (costoTotal + 6.99);
+                    } else if (entradaCobertura.isSelected()) {
+                        costoTotal = (float) (costoTotal + 12.99);
                     }
-                } catch (SQLException e) {
-                    System.out.println(e);
+
+                    DefaultTableModel modelo4 = (DefaultTableModel) tablaEstilo.getModel();
+                    modelo4.setRowCount(0);
+
+                    res = Conexiones.Conexion.consulta("Select * from esquema.Estilo");
+                    try {
+                        while (res.next()) {
+                            Vector v = new Vector();
+
+                            v.add(res.getInt(1));
+                            v.add(res.getString(2));
+                            modelo4.addRow(v);
+                            tablaEstilo.setModel(modelo4);
+                        }
+                    } catch (SQLException e) {
+                        System.out.println(e);
+
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Se han ingresado los datos correctamente", "ÉXITO", JOptionPane.PLAIN_MESSAGE);
+                    panelPrincipal.setSelectedIndex(3);
+                } catch (HeadlessException e) {
+                    JOptionPane.showMessageDialog(null, "No se ha podido ingresar los datos", "Error", JOptionPane.PLAIN_MESSAGE);
 
                 }
-
-                JOptionPane.showMessageDialog(null, "Se han ingresado los datos correctamente", "ÉXITO", JOptionPane.PLAIN_MESSAGE);
-                panelPrincipal.setSelectedIndex(3);
-            } catch (HeadlessException e) {
-                JOptionPane.showMessageDialog(null, "No se ha podido ingresar los datos", "Error", JOptionPane.PLAIN_MESSAGE);
 
             }
-
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -1496,7 +1502,6 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             System.out.println(objDate);
             SimpleDateFormat fecha3 = new SimpleDateFormat("MM/dd/yyyy");
             String fechaSolicitud = fecha3.format(objDate.getTime());
-            System.out.println("&&" + fechaSolicitud);
 
             Procedimientos.ingresarReserva(fechaSolicitud, fechaA, fechaB, entradaSedeRecogida.getSelectedItem().toString(), entradaSedeEntrega.getSelectedItem().toString(), cedulaReserva, copiaPlacaR, Integer.toString(idoperador));
             res = Conexiones.Conexion.consulta("select IDENT_CURRENT('esquema.Reserva')");
@@ -1529,7 +1534,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                 Procedimientos.ingresarReservaServicioOpcionales(Integer.toString(idreserva), cedulaReserva, "5");
             }
 
-            informacionReserva = ("Cédula del cliente: \t" + cedulaReserva + "\n" + "Número de Reserva: \t" + idreserva + "\n" + "Número de Factura: \t" + idfactura + "\n" + "Fecha de Solicitud: \t" + fechaSolicitud + "\n" + "Sede Recogida: \t" + copiaSedeRecogida +  "\n" + "Fecha Recogida: \t" + copiaFechaR + "\n"
+            informacionReserva = ("Cédula del cliente: \t" + cedulaReserva + "\n" + "Número de Reserva: \t" + idreserva + "\n" + "Número de Factura: \t" + idfactura + "\n" + "Fecha de Solicitud: \t" + fechaSolicitud + "\n" + "Sede Recogida: \t" + copiaSedeRecogida + "\n" + "Fecha Recogida: \t" + copiaFechaR + "\n"
                     + "Sede Entrega: \t" + copiaSedeEntrega + "\n" + "Fecha Entrega: \t" + copiaFechaR + "\n" + "Número de Operador: \t" + idoperador + "\n" + "Placa Vehículo: \t" + copiaPlacaR + "\n" + "Costo Total de la Reserva: \t$" + costoReserva + "\n");
 
             PDF.crearPDF(informacionReserva, correoCliente);

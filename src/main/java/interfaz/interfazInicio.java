@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import Conexiones.*;
+import java.net.Socket;
 
 /**
  *
@@ -18,6 +19,7 @@ public class interfazInicio extends javax.swing.JFrame {
 
     static ResultSet res;
     public static int OperadorActual;
+    static boolean internet = false;
 
     /**
      * Creates new form interfazInicio
@@ -28,6 +30,20 @@ public class interfazInicio extends javax.swing.JFrame {
 
     public static int getIDOperador() {
         return OperadorActual;
+    }
+
+    public static boolean comprobarInternet() {
+        String dirWeb = "www.google.com";
+        int puerto = 80;
+        try {
+            Socket s = new Socket(dirWeb, puerto);
+            if (s.isConnected()) {
+                internet = true;
+            }
+        } catch (Exception e) {
+            internet = false;
+        }
+        return internet;
     }
 
     /**
@@ -148,59 +164,66 @@ public class interfazInicio extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String palabra = "@";
-        String texto = jTextField1.getText();
-        boolean resultado = texto.contains(palabra);
-        char[] contraseña = jPasswordField1.getPassword();
-        if (jTextField1.getText().isEmpty() | contraseña.length == 0) {
-            JOptionPane.showMessageDialog(this, "Por favor verifique los campos", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        internet=comprobarInternet();
+        if (internet == false) {
+            JOptionPane.showMessageDialog(this, "Por favor verifique la conexión a Internet", "Advertencia", JOptionPane.WARNING_MESSAGE);
+
         } else {
-            try {
-                String a;
-                char[] b;
-                a = jTextField1.getText();
-                b = jPasswordField1.getPassword();
-                String c = new String(b);
-                if (resultado) {
-                    res = Conexion.consulta("select * from esquema.Operador");
-                    while (res.next()) {
-                        if (res.getString(2).equals(a) && res.getString(3).equals(c)) {
-                            JOptionPane.showMessageDialog(this, "Se ha verificado las credenciales exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
-                            OperadorActual = res.getInt(1);
-                            jTextField1.setText("");
-                            jTextField1.requestFocus();
-                            jPasswordField1.setText("");
-                            jPasswordField1.requestFocus();
-                            Menú obj = new Menú();
-                            obj.setVisible(true);
-                            obj.setIDOPeradorMenu(OperadorActual);
-                            this.dispose();
-                        }
-                    }
-
-                } else {
-                    res = Conexion.consulta("select * from esquema.Operador");
-                    while (res.next()) {
-                        if (res.getString(4).equals(a) && res.getString(3).equals(c)) {
-                            JOptionPane.showMessageDialog(this, "Se ha verificado las credenciales exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
-                            OperadorActual = res.getInt(1);
-                            jTextField1.setText("");
-                            jTextField1.requestFocus();
-                            jPasswordField1.setText("");
-                            jPasswordField1.requestFocus();
-                            Menú obj = new Menú();
-                            obj.setVisible(true);
-                            obj.setIDOPeradorMenu(OperadorActual);
-                            this.dispose();
+            String palabra = "@";
+            String texto = jTextField1.getText();
+            boolean resultado = texto.contains(palabra);
+            char[] contraseña = jPasswordField1.getPassword();
+            if (jTextField1.getText().isEmpty() | contraseña.length == 0) {
+                JOptionPane.showMessageDialog(this, "Por favor verifique los campos", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            } else {
+                try {
+                    String a;
+                    char[] b;
+                    a = jTextField1.getText();
+                    b = jPasswordField1.getPassword();
+                    String c = new String(b);
+                    if (resultado) {
+                        res = Conexion.consulta("select * from esquema.Operador");
+                        while (res.next()) {
+                            if (res.getString(2).equals(a) && res.getString(3).equals(c)) {
+                                JOptionPane.showMessageDialog(this, "Se ha verificado las credenciales exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
+                                OperadorActual = res.getInt(1);
+                                jTextField1.setText("");
+                                jTextField1.requestFocus();
+                                jPasswordField1.setText("");
+                                jPasswordField1.requestFocus();
+                                Menú obj = new Menú();
+                                obj.setVisible(true);
+                                obj.setIDOPeradorMenu(OperadorActual);
+                                this.dispose();
+                            }
                         }
 
-                    }
+                    } else {
+                        res = Conexion.consulta("select * from esquema.Operador");
+                        while (res.next()) {
+                            if (res.getString(4).equals(a) && res.getString(3).equals(c)) {
+                                JOptionPane.showMessageDialog(this, "Se ha verificado las credenciales exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
+                                OperadorActual = res.getInt(1);
+                                jTextField1.setText("");
+                                jTextField1.requestFocus();
+                                jPasswordField1.setText("");
+                                jPasswordField1.requestFocus();
+                                Menú obj = new Menú();
+                                obj.setVisible(true);
+                                obj.setIDOPeradorMenu(OperadorActual);
+                                this.dispose();
+                            }
 
+                        }
+
+                    }
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, "No se ha podido verificar las credenciales", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "No se ha podido verificar las credenciales", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
