@@ -219,7 +219,7 @@ public class interfazMapa extends javax.swing.JFrame {
                 panelMapa.add(browser);
                 try {
                     System.out.println(ALat + "\n" + ALong + "\n" + BLat + "\n" + BLong + "\n");
-                    Procedimientos.ingresarRecorrido(nombreArchivo, ALat, ALong, BLat, BLong);
+                    Procedimientos.ingresarRecorrido(ALat, ALong, BLat, BLong);
                 } catch (SQLException | ParseException ex) {
                     Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
                 }

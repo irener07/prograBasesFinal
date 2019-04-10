@@ -24,6 +24,10 @@ public class interfazInicio extends javax.swing.JFrame {
     public interfazInicio() {
         initComponents();
     }
+    
+    public static String getIDOperador(){
+        return OperadorActual;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -161,7 +165,7 @@ public class interfazInicio extends javax.swing.JFrame {
                     while (res.next()) {
                         if (res.getString(2).equals(a) && res.getString(3).equals(c)) {
                             JOptionPane.showMessageDialog(this, "Se ha verificado las credenciales exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
-                            OperadorActual= a;
+                            OperadorActual= res.getString(1);
                             jTextField1.setText("");
                             jTextField1.requestFocus();
                             jPasswordField1.setText("");
@@ -179,6 +183,7 @@ public class interfazInicio extends javax.swing.JFrame {
                     while (res.next()) {
                         if (res.getString(4).equals(a) && res.getString(3).equals(c)) {
                             JOptionPane.showMessageDialog(this, "Se ha verificado las credenciales exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
+                            OperadorActual= res.getString(1);
                             jTextField1.setText("");
                             jTextField1.requestFocus();
                             jPasswordField1.setText("");

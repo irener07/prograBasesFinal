@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package interfaz;
+
 import Conexiones.Procedimientos;
 import static interfaz.interfazServMant.res;
 import java.awt.Image;
@@ -25,83 +26,90 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author win8
  */
 public class interfazIngresarVehiculo extends javax.swing.JFrame {
+
     static File fotito;
     String filename = null;
     static ResultSet res;
-    int cont; 
-    byte[] icono; 
+    int cont;
+    byte[] icono;
     Blob blob;
-    
+
     public interfazIngresarVehiculo() {
         initComponents();
-        entradaEstilo.removeAllItems();
         entradaColor.removeAllItems();
         entradaEstado.removeAllItems();
+        entradaEstilo.removeAllItems();
         entradaMarca.removeAllItems();
         entradaSede.removeAllItems();
         entradaTransmision.removeAllItems();
-        cargarEstilo();
-        cargarEstado();
+        cargarEstilos();
+        cargarEstados();
         cargarColor();
-        cargarMarca();
-        cargarSede();
-        cargarTransmision();
+        cargarMarcas();
+        cargarSedes();
+        cargarTransmisiones();
     }
-    public void cargarEstilo(){
+
+    public void cargarEstilos() {
         res = Conexiones.Conexion.consulta("select * from esquema.Estilo");
-        try{
-            while(res.next()){
+        try {
+            while (res.next()) {
                 entradaEstilo.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }
-    public void cargarEstado(){
+
+    public void cargarEstados() {
         res = Conexiones.Conexion.consulta("select * from esquema.Estado");
-        try{
-            while(res.next()){
+        try {
+            while (res.next()) {
                 entradaEstado.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }
-    public void cargarColor(){
-        res = Conexiones.Conexion.consulta("select * from esquema.Color");
-        try{
-            while(res.next()){
-                entradaColor.addItem(res.getString(1));
-            }
-        }catch(SQLException e){
-    }
-    }    
-    public void cargarMarca(){
-        res = Conexiones.Conexion.consulta("select * from esquema.Marca");
-        try{
-            while(res.next()){
-                entradaMarca.addItem(res.getString(1));
-            }
-        }catch(SQLException e){
-    }
-    }  
-    public void cargarSede(){
+
+    public void cargarSedes() {
         res = Conexiones.Conexion.consulta("select * from esquema.Sede");
-        try{
-            while(res.next()){
+        try {
+            while (res.next()) {
                 entradaSede.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }    
-    public void cargarTransmision(){
+
+    public void cargarTransmisiones() {
         res = Conexiones.Conexion.consulta("select * from esquema.TipoTransmision");
-        try{
-            while(res.next()){
+        try {
+            while (res.next()) {
                 entradaTransmision.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }    
-    
+
+    public void cargarMarcas() {
+        res = Conexiones.Conexion.consulta("select * from esquema.Marca");
+        try {
+            while (res.next()) {
+                entradaMarca.addItem(res.getString(1));
+            }
+        } catch (SQLException e) {
+        }
+    }
+
+    public void cargarColor() {
+        res = Conexiones.Conexion.consulta("select * from esquema.Color");
+        try {
+            while (res.next()) {
+                entradaColor.addItem(res.getString(1));
+            }
+        } catch (SQLException e) {
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -216,6 +224,11 @@ public class interfazIngresarVehiculo extends javax.swing.JFrame {
         maletas.setText("Cantidad de Maletas:");
 
         entradaEstilo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        entradaEstilo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                entradaEstiloActionPerformed(evt);
+            }
+        });
 
         foto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -418,53 +431,57 @@ public class interfazIngresarVehiculo extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(entradaPlaca.getText().isEmpty()||entradaCosto.getText().isEmpty()||entradaKilometraje.getText().isEmpty()||entradaVIN.getText().isEmpty()||entradaPuertas.getText().isEmpty()
-                || entradaMPG.getText().isEmpty()||entradaCapacidad.getText().isEmpty()||entradaMaletas.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Ingrese todos los datos","Información",JOptionPane.INFORMATION_MESSAGE);            
-        }else{
-            res = Conexiones.Conexion.consulta("Select COUNT(placa)from esquema.Vehiculo where placa='"+entradaPlaca.getText()+"'");
-            try{
-                while(res.next()){
-                    cont= res.getInt(1);
+        if (entradaPlaca.getText().isEmpty() || entradaCosto.getText().isEmpty() || entradaKilometraje.getText().isEmpty() || entradaVIN.getText().isEmpty() || entradaPuertas.getText().isEmpty()
+                || entradaMPG.getText().isEmpty() || entradaCapacidad.getText().isEmpty() || entradaMaletas.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese todos los datos", "Información", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            res = Conexiones.Conexion.consulta("Select COUNT(placa)from esquema.Vehiculo where placa='" + entradaPlaca.getText() + "'");
+            try {
+                while (res.next()) {
+                    cont = res.getInt(1);
                 }
-            }catch(SQLException e){
+            } catch (SQLException e) {
             }
-            if(cont>=1){
-                JOptionPane.showMessageDialog(this, "Este elemento ya existe","Informacion",JOptionPane.INFORMATION_MESSAGE);
-            }else{
+            if (cont >= 1) {
+                JOptionPane.showMessageDialog(this, "Este elemento ya existe", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+            } else {
                 System.out.println("Llega aca");
                 try {
                     blob = new javax.sql.rowset.serial.SerialBlob(icono);
-                    Procedimientos.ingresoVehiculo(entradaPlaca.getText(),entradaVIN.getText(),entradaCosto.getText(),entradaAño.getText(),entradaCapacidad.getText(),entradaPuertas.getText(),
-                            entradaMaletas.getText(),entradaMPG.getText(),entradaKilometraje.getText(),blob,entradaTransmision.getSelectedItem().toString(),entradaColor.getSelectedItem().toString(),
-                            entradaMarca.getSelectedItem().toString(),entradaEstado.getSelectedItem().toString(),entradaEstilo.getSelectedItem().toString(),entradaSede.getSelectedItem().toString());
+                    Procedimientos.ingresoVehiculo(entradaPlaca.getText(), entradaVIN.getText(), entradaCosto.getText(), entradaAño.getText(), entradaCapacidad.getText(), entradaPuertas.getText(),
+                            entradaMaletas.getText(), entradaMPG.getText(), entradaKilometraje.getText(), blob, entradaTransmision.getSelectedItem().toString(), entradaColor.getSelectedItem().toString(),
+                            entradaMarca.getSelectedItem().toString(), entradaEstado.getSelectedItem().toString(), entradaEstilo.getSelectedItem().toString(), entradaSede.getSelectedItem().toString());
                 } catch (SQLException e) {
                 }
                 JOptionPane.showMessageDialog(this, "Los datos han sido guardados correctamente");
             }
-        }       
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void cargarFotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarFotoActionPerformed
-        JFileChooser elegida = new  JFileChooser();
-        FileNameExtensionFilter fil = new FileNameExtensionFilter("JPG, PNG & GIF","jpg","png");
+        JFileChooser elegida = new JFileChooser();
+        FileNameExtensionFilter fil = new FileNameExtensionFilter("JPG, PNG & GIF", "jpg", "png");
         elegida.setFileFilter(fil);
         elegida.showOpenDialog(null);
         File f = elegida.getSelectedFile();
         filename = f.getAbsolutePath();
         txtruta.setText(filename);
         System.out.println(filename);
-        ImageIcon imageIcon = new ImageIcon(new ImageIcon(filename).getImage().getScaledInstance(foto.getWidth(),foto.getHeight(),Image.SCALE_SMOOTH));
+        ImageIcon imageIcon = new ImageIcon(new ImageIcon(filename).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_SMOOTH));
         foto.setIcon(imageIcon);
-        try{
+        try {
             icono = new byte[(int) filename.length()];
             InputStream input = new FileInputStream(filename);
             input.read(icono);
             System.out.println(icono);
-        }catch(Exception ex){
+        } catch (Exception ex) {
         }
-        
+
     }//GEN-LAST:event_cargarFotoActionPerformed
+
+    private void entradaEstiloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entradaEstiloActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_entradaEstiloActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

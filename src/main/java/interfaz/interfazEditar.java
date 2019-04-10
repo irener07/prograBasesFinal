@@ -5,7 +5,10 @@
  */
 package interfaz;
 
+import Conexiones.*;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,19 +18,23 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
+import javax.imageio.ImageIO;
 
 /**
  *
  * @author win8
  */
 public class interfazEditar extends javax.swing.JFrame {
+
     static ResultSet res;
     int cont;
-    byte[] icono; 
-    Blob blob;      
-    String filename = null;    
+    byte[] icono;
+    byte[] data;
+    Blob blob;
+    String filename = null;
 
     public interfazEditar() {
         initComponents();
@@ -44,60 +51,68 @@ public class interfazEditar extends javax.swing.JFrame {
         cargarSede();
         cargarTransmision();
     }
-    public void cargarEstilo(){
-        res = Conexiones.Conexion.consulta("select * from esquema.Estilo");
-        try{
-            while(res.next()){
+
+    public void cargarEstilo() {
+        res = Conexion.consulta("select * from esquema.Estilo");
+        try {
+            while (res.next()) {
                 entradaEstiloE.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
     }
-    }
-    public void cargarEstado(){
-        res = Conexiones.Conexion.consulta("select * from esquema.Estado");
-        try{
-            while(res.next()){
+
+    public void cargarEstado() {
+        res = Conexion.consulta("select * from esquema.Estado");
+        try {
+            while (res.next()) {
                 entradaEstadoE.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }
-    public void cargarColor(){
-        res = Conexiones.Conexion.consulta("select * from esquema.Color");
-        try{
-            while(res.next()){
+
+    public void cargarColor() {
+        res = Conexion.consulta("select * from esquema.Color");
+        try {
+            while (res.next()) {
                 entradaColorE.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }    
-    public void cargarMarca(){
-        res = Conexiones.Conexion.consulta("select * from esquema.Marca");
-        try{
-            while(res.next()){
+
+    public void cargarMarca() {
+        res = Conexion.consulta("select * from esquema.Marca");
+        try {
+            while (res.next()) {
                 entradaMarcaE.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }  
-    public void cargarSede(){
-        res = Conexiones.Conexion.consulta("select * from esquema.Sede");
-        try{
-            while(res.next()){
+
+    public void cargarSede() {
+        res = Conexion.consulta("select * from esquema.Sede");
+        try {
+            while (res.next()) {
                 entradaSedeE.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }    
-    public void cargarTransmision(){
-        res = Conexiones.Conexion.consulta("select * from esquema.TipoTransmision");
-        try{
-            while(res.next()){
+
+    public void cargarTransmision() {
+        res = Conexion.consulta("select * from esquema.TipoTransmision");
+        try {
+            while (res.next()) {
                 entradaTipoE.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -125,7 +140,7 @@ public class interfazEditar extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
-        foto = new javax.swing.JLabel();
+        fotoVehiculo = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         entradaCostoE = new javax.swing.JTextField();
         entradaAñoE = new javax.swing.JTextField();
@@ -143,7 +158,7 @@ public class interfazEditar extends javax.swing.JFrame {
         entradasMpgE = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
         entradaPlacaEditar = new javax.swing.JTextField();
-        txtRuta = new javax.swing.JTextField();
+        txtruta = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -190,7 +205,7 @@ public class interfazEditar extends javax.swing.JFrame {
 
         jLabel16.setText("Foto:");
 
-        foto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        fotoVehiculo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jButton2.setText("Cargar Foto");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -243,6 +258,12 @@ public class interfazEditar extends javax.swing.JFrame {
 
         jLabel18.setText("Placa:");
 
+        txtruta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtrutaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -289,7 +310,7 @@ public class interfazEditar extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(78, 78, 78)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtRuta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtruta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                             .addComponent(jLabel14)
@@ -308,7 +329,7 @@ public class interfazEditar extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel16)
                                         .addGap(18, 18, 18)
-                                        .addComponent(foto, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(fotoVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -389,9 +410,9 @@ public class interfazEditar extends javax.swing.JFrame {
                             .addComponent(jButton2)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(foto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(fotoVehiculo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtRuta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtruta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
         );
 
@@ -412,25 +433,27 @@ public class interfazEditar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(entradaPlacaEditar.getText().isEmpty()||entradaCostoE.getText().isEmpty()||entradaAñoE.getText().isEmpty()||entradaKiloE.getText().isEmpty()||
-                entradaVinE.getText().isEmpty()|| entradaPuertasE.getText().isEmpty()||entradasMpgE.getText().isEmpty()||entradaCapacidadE.getText().isEmpty() ||
-                entradaMaletasE.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Ingrese todos los datos","Información",JOptionPane.INFORMATION_MESSAGE);            
-        }else{            
-        try{
-            blob = new javax.sql.rowset.serial.SerialBlob(icono); 
-            PreparedStatement pps = Conexiones.Conexion.getConexion().prepareStatement("update esquema.Vehiculo set numeroVIN='"+entradaVinE.getText()+"', costoDia='"+entradaCostoE.getText()+
-                    "', año='"+entradaAñoE.getText()+"', capacidadPersonas='"+entradaCapacidadE.getText()+"', numeroPuertas='"+entradaPuertasE.getText()+"', cantidadMaletas='"+entradaMaletasE.getText()+
-                    "', mpg='"+entradasMpgE.getText()+"', kilometraje='"+entradaKiloE.getText()+"', foto='"+blob+"', idTransmision='"+entradaTipoE.getSelectedItem().toString()+"', idColor='"+entradaColorE.getSelectedItem().toString()+
-                    "', idMarca='"+entradaMarcaE.getSelectedItem().toString()+"', idEstado='"+entradaEstadoE.getSelectedItem().toString()+"', idEstilo='"+entradaEstiloE.getSelectedItem().toString()+
-                    "', idSede='"+entradaSedeE.getSelectedItem().toString()+"' where placa ='"+entradaPlacaEditar.getText()+"'");
-            pps.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Los datos ha sido modificados");
-            
-        }catch(SQLException e){
+
+        if (entradaPlacaEditar.getText().isEmpty() || entradaCostoE.getText().isEmpty() || entradaAñoE.getText().isEmpty() || entradaKiloE.getText().isEmpty()
+                || entradaVinE.getText().isEmpty() || entradaPuertasE.getText().isEmpty() || entradasMpgE.getText().isEmpty() || entradaCapacidadE.getText().isEmpty()
+                || entradaMaletasE.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese todos los datos", "Información", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            try {
+
+                PreparedStatement pps = Conexion.getConexion().prepareStatement("update esquema.Vehiculo set numeroVIN='" + entradaVinE.getText() + "', costoDia='" + entradaCostoE.getText()
+                        + "', año='" + entradaAñoE.getText() + "', capacidadPersonas='" + entradaCapacidadE.getText() + "', numeroPuertas='" + entradaPuertasE.getText() + "', cantidadMaletas='" + entradaMaletasE.getText()
+                        + "', mpg='" + entradasMpgE.getText() + "', kilometraje='" + entradaKiloE.getText() + "', foto= CONVERT(VARBINARY(max), '"+data+"'), idTransmision='" + entradaTipoE.getSelectedItem().toString() + "', idColor='" + entradaColorE.getSelectedItem().toString()
+                        + "', idMarca='" + entradaMarcaE.getSelectedItem().toString() + "', idEstado='" + entradaEstadoE.getSelectedItem().toString() + "', idEstilo='" + entradaEstiloE.getSelectedItem().toString()
+                        + "', idSede='" + entradaSedeE.getSelectedItem().toString() + "' where placa ='" + entradaPlacaEditar.getText() + "'");
+                pps.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Los datos ha sido modificados");
+
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
         }
-        }
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void entradaAñoEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entradaAñoEActionPerformed
@@ -454,24 +477,42 @@ public class interfazEditar extends javax.swing.JFrame {
     }//GEN-LAST:event_entradasMpgEActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JFileChooser elegida = new  JFileChooser();
-        FileNameExtensionFilter fil = new FileNameExtensionFilter("JPG, PNG & GIF","jpg","png");
-        elegida.setFileFilter(fil);
-        elegida.showOpenDialog(null);
-        File f = elegida.getSelectedFile();
-        filename = f.getAbsolutePath();
-        txtRuta.setText(filename);
-        System.out.println(filename);
-        ImageIcon imageIcon = new ImageIcon(new ImageIcon(filename).getImage().getScaledInstance(foto.getWidth(),foto.getHeight(),Image.SCALE_SMOOTH));
-        foto.setIcon(imageIcon);
-        try{
-            icono = new byte[(int) filename.length()];
-            InputStream input = new FileInputStream(filename);
-            input.read(icono);
-            System.out.println(icono);
-        }catch(Exception ex){
-        }                     
+        JFileChooser archivo = new JFileChooser();
+        FileNameExtensionFilter fil = new FileNameExtensionFilter("JPG, PNG & GIF", "jpg", "png");
+        archivo.setFileFilter(fil);
+        int ventana = archivo.showOpenDialog(null);
+
+        if (ventana == JFileChooser.APPROVE_OPTION) {
+
+            File file = archivo.getSelectedFile();
+
+            txtruta.setText(String.valueOf(file));
+
+            Image foto = getToolkit().getImage(txtruta.getText());
+
+            foto = foto.getScaledInstance(fotoVehiculo.getWidth(), fotoVehiculo.getHeight(), Image.SCALE_DEFAULT);
+
+            fotoVehiculo.setIcon(new ImageIcon(foto));
+
+            BufferedImage bImagen = null;
+            try {
+                bImagen = ImageIO.read(new File(txtruta.getText()));
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex);
+            }
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            try {
+                ImageIO.write(bImagen, "jpg", bos);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex);
+            }
+            data = bos.toByteArray();
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void txtrutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtrutaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtrutaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -524,7 +565,7 @@ public class interfazEditar extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> entradaTipoE;
     private javax.swing.JTextField entradaVinE;
     private javax.swing.JTextField entradasMpgE;
-    private javax.swing.JLabel foto;
+    private javax.swing.JLabel fotoVehiculo;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -545,6 +586,6 @@ public class interfazEditar extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtRuta;
+    private javax.swing.JTextField txtruta;
     // End of variables declaration//GEN-END:variables
 }

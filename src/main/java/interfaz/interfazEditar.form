@@ -98,7 +98,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="78" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="txtRuta" alignment="1" min="-2" pref="352" max="-2" attributes="0"/>
+                                      <Component id="txtruta" alignment="1" min="-2" pref="352" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Group type="102" attributes="0">
                                               <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
@@ -121,7 +121,7 @@
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="jLabel16" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                                          <Component id="foto" min="-2" pref="356" max="-2" attributes="0"/>
+                                          <Component id="fotoVehiculo" min="-2" pref="356" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -227,11 +227,11 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="foto" max="32767" attributes="0"/>
+                          <Component id="fotoVehiculo" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="txtRuta" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtruta" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -332,7 +332,7 @@
             <Property name="text" type="java.lang.String" value="Foto:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="foto">
+        <Component class="javax.swing.JLabel" name="fotoVehiculo">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -477,7 +477,10 @@
         </Component>
         <Component class="javax.swing.JTextField" name="entradaPlacaEditar">
         </Component>
-        <Component class="javax.swing.JTextField" name="txtRuta">
+        <Component class="javax.swing.JTextField" name="txtruta">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtrutaActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

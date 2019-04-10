@@ -39,7 +39,6 @@ public class PDF {
             
             Correo.enviarCorreoReserva(correo, ruta + "/Desktop/FacturaCliente.pdf");
             
-            
             JOptionPane.showMessageDialog(null, "La factura PDF se ha enviado", "Exito", JOptionPane.INFORMATION_MESSAGE);
         } catch (DocumentException | FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

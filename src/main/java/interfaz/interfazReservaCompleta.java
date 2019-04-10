@@ -5,33 +5,22 @@
  */
 package interfaz;
 
+import Conexiones.Procedimientos;
 import Maps.*;
 import prograbases1.*;
 import Conexiones.*;
-import com.google.maps.errors.ApiException;
-import com.opencsv.CSVReader;
 import java.awt.HeadlessException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import interfaz.interfazInicio;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -39,9 +28,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class interfazReservaCompleta extends javax.swing.JFrame {
 
+    java.util.Date copiaFechaRecogida;
+    java.sql.Date copiaFecha1;
+    java.util.Date copiaFechaEntrega;
+    java.sql.Date copiaFecha2;
+    public static String correoCliente;
     static ResultSet res;
     int cont;
-    int idRecorrido;
+    public int idreserva;
+    public int idfactura;
+    public int idRecorrido;
     java.sql.Date fechaE;
     public String copiaSedeRecogida;
     public String copiaSedeEntrega;
@@ -49,14 +45,11 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
     public String copiaFechaE;
     public String cedulaReserva;
     public String copiaPlacaR;
-    public double costoTotal;
+    public float costoTotal;
+    public int cantidadDias;
+    public static float costoReserva;
     public String copiaFechaSolicitud;
-    public static final String SEPARADOR = ",";
-    public static String nombreArchivo;
-    public static double puntoALat;
-    public static double puntoALong;
-    public static double puntoBLat;
-    public static double puntoBLong;
+    public static String informacionReserva;
     SwingBrowser browser = new SwingBrowser();
 
     /**
@@ -122,7 +115,6 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-        cargarCliente = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
@@ -154,7 +146,6 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         entradaPrecioMayor = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
         entradaEstiloFiltro = new javax.swing.JTextField();
-        jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jPanel11 = new javax.swing.JPanel();
@@ -329,74 +320,65 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             }
         });
 
-        cargarCliente.setText("Cargar Datos");
-        cargarCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cargarClienteActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel7Layout.createSequentialGroup()
-                            .addComponent(jLabel5)
-                            .addGap(130, 130, 130))
-                        .addGroup(jPanel7Layout.createSequentialGroup()
-                            .addComponent(jLabel8)
-                            .addGap(134, 134, 134)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(resultadoNombre)
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(resultadoApellido1))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(resultadoTelefono))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(resultadoCedula))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(resultadoCorreo))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(resultadoApellido2)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 235, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel15)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(130, 130, 130))
+                            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(resultadoNombre)
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jPanel7Layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(resultadoApellido1))
+                                    .addGroup(jPanel7Layout.createSequentialGroup()
+                                        .addComponent(jLabel9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(resultadoTelefono))
+                                    .addGroup(jPanel7Layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(resultadoCedula))
+                                    .addGroup(jPanel7Layout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(resultadoApellido2)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 235, Short.MAX_VALUE)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel15)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel13)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabel10))
+                                .addGap(66, 66, 66)
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(resultadoDistrito)
+                                    .addComponent(resultadoSeñas)
+                                    .addComponent(resultadoProvincia)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                                        .addComponent(resultadoCanton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(28, 28, 28)))))
+                        .addGap(54, 54, 54))
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel13)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel10))
-                        .addGap(66, 66, 66)
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(resultadoDistrito)
-                            .addComponent(resultadoSeñas)
-                            .addComponent(resultadoProvincia)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                                .addComponent(resultadoCanton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(cargarCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(28, 28, 28)))))
-                .addGap(54, 54, 54))
+                        .addComponent(jLabel8)
+                        .addGap(86, 86, 86)
+                        .addComponent(resultadoCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(555, 555, 555))))
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(180, 180, 180)
                 .addComponent(jLabel3)
@@ -442,9 +424,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                     .addComponent(resultadoTelefono))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addGap(68, 68, 68)
-                .addComponent(cargarCliente)
-                .addGap(18, 18, 18)
+                .addGap(118, 118, 118)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 208, Short.MAX_VALUE)
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -467,10 +447,10 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         jPanel8.setBackground(new java.awt.Color(0, 153, 153));
 
         jLabel16.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel16.setText("Sede de Recogida:");
+        jLabel16.setText("Sede de Entrega:");
 
         jLabel17.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel17.setText("Sede de Entrega:");
+        jLabel17.setText("Sede de Recogida:");
 
         jLabel18.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel18.setForeground(new java.awt.Color(255, 255, 255));
@@ -528,15 +508,13 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                                .addComponent(jLabel17)
-                                .addGap(18, 18, 18)
-                                .addComponent(entradaSedeEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addComponent(jLabel16)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(entradaSedeRecogida, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(30, 30, 30)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel16))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(entradaSedeEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(entradaSedeRecogida, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(28, 28, 28)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(entradaFechaEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(entradaFechaRecogida, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -658,13 +636,6 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
 
         jLabel24.setText("a mayor:");
 
-        jButton5.setText("Siguiente");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
         jButton6.setText("Ver detalle de Vehiculo Seleccionado");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -683,34 +654,6 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGap(91, 91, 91)
-                .addComponent(jButton6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton5)
-                .addGap(107, 107, 107))
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel21)
-                    .addComponent(jLabel22)
-                    .addComponent(jLabel23))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(entradaEstiloFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(entradaCapacidadFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton4)
-                            .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addComponent(entradaPrecioMenor, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(40, 40, 40)
-                                .addComponent(jLabel24)))
-                        .addGap(33, 33, 33)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel20)
-                            .addComponent(entradaPrecioMayor, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(182, 390, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
@@ -719,6 +662,33 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                 .addGap(97, 613, Short.MAX_VALUE)
                 .addComponent(jButton10)
                 .addGap(248, 248, 248))
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel21)
+                            .addComponent(jLabel22)
+                            .addComponent(jLabel23))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(entradaEstiloFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(entradaCapacidadFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton4)
+                                    .addGroup(jPanel9Layout.createSequentialGroup()
+                                        .addComponent(entradaPrecioMenor, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(40, 40, 40)
+                                        .addComponent(jLabel24)))
+                                .addGap(33, 33, 33)
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel20)
+                                    .addComponent(entradaPrecioMayor, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGap(343, 343, 343)
+                        .addComponent(jButton6)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -745,11 +715,9 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                     .addComponent(jButton10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6))
-                .addGap(19, 19, 19))
+                .addGap(18, 18, 18)
+                .addComponent(jButton6)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -935,9 +903,9 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
 
         jLabel26.setText("Cedula del Cliente:");
 
-        jLabel27.setText("Sede de Recogida:");
+        jLabel27.setText("Sede de Entrega:");
 
-        jLabel28.setText("Sede de Entrega:");
+        jLabel28.setText("Sede de Recogida:");
 
         jLabel29.setText("Fecha:");
 
@@ -990,34 +958,34 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel28)
+                    .addComponent(jLabel27)
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel32, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel31, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
+                            .addComponent(jLabel35)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cargarTipoCambioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
+                            .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel34)
+                                .addComponent(jLabel49))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(cargarTipoCambioFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cargarTipoCambioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(jLabel26)
                         .addGap(44, 44, 44)
-                        .addComponent(cargarCedulaReserva))
+                        .addComponent(jLabel33))
+                    .addComponent(jLabel26))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel28)
-                            .addComponent(jLabel27)
-                            .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel32, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel31, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
-                                    .addComponent(jLabel35)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(cargarTipoCambioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
-                                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel34)
-                                        .addComponent(jLabel49))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(cargarTipoCambioFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(cargarTipoCambioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(jPanel10Layout.createSequentialGroup()
-                                .addGap(44, 44, 44)
-                                .addComponent(jLabel33)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cargarCedulaReserva)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cargarSedeR)
                             .addComponent(cargarSedeE)
@@ -1033,7 +1001,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                                 .addComponent(jLabel29)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(cargarFechaR)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 180, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 206, Short.MAX_VALUE)
                         .addComponent(jButton7)
                         .addGap(134, 134, 134))))
             .addGroup(jPanel10Layout.createSequentialGroup()
@@ -1097,12 +1065,11 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(26, 26, 26))
+                .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         panelPrincipal.addTab("detalleReserva", jPanel6);
@@ -1138,6 +1105,22 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                 }
 
                 if (cont >= 0) {
+                    res = Conexiones.Conexion.consulta("Select * from esquema.Cliente where cedula='" + cedulaReserva + "'");
+                    try {
+                        while (res.next()) {
+                            resultadoCedula.setText((res.getString(1)));
+                            resultadoNombre.setText(res.getString(2));
+                            resultadoApellido1.setText(res.getString(3));
+                            resultadoApellido2.setText(res.getString(4));
+                            resultadoCorreo.setText(res.getString(5));
+                            resultadoTelefono.setText((res.getString(6)));
+                            resultadoProvincia.setText(res.getString(7));
+                            resultadoCanton.setText(res.getString(8));
+                            resultadoDistrito.setText(res.getString(9));
+                            resultadoSeñas.setText(res.getString(10));
+                        }
+                    } catch (SQLException e) {
+                    }
                     panelPrincipal.setSelectedIndex(1);
                 }
 
@@ -1157,11 +1140,11 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             try {
                 copiaSedeRecogida = entradaSedeRecogida.getSelectedItem().toString();
                 copiaSedeEntrega = entradaSedeEntrega.getSelectedItem().toString();
-                java.util.Date copiaFechaRecogida = entradaFechaRecogida.getDate();
-                java.sql.Date copiaFecha1 = new java.sql.Date(copiaFechaRecogida.getTime());
+                copiaFechaRecogida = entradaFechaRecogida.getDate();
+                copiaFecha1 = new java.sql.Date(copiaFechaRecogida.getTime());
                 copiaFechaR = copiaFecha1.toString();
-                java.util.Date copiaFechaEntrega = entradaFechaEntrega.getDate();
-                java.sql.Date copiaFecha2 = new java.sql.Date(copiaFechaEntrega.getTime());
+                copiaFechaEntrega = entradaFechaEntrega.getDate();
+                copiaFecha2 = new java.sql.Date(copiaFechaEntrega.getTime());
                 copiaFechaE = copiaFecha2.toString();
                 Calendar hoy = Calendar.getInstance(); //obtiene la fecha actual
                 int anio = hoy.get(Calendar.YEAR);
@@ -1171,15 +1154,15 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                 java.sql.Date copiaFecha3 = new java.sql.Date(copiaFechaS.getTime());
                 copiaFechaE = copiaFecha3.toString();
                 if (entradaWifi.isSelected()) {
-                    costoTotal = costoTotal + 15.00;
+                    costoTotal = (float) (costoTotal + 15.00);
                 } else if (entradaAsistencia.isSelected()) {
-                    costoTotal = costoTotal + 3.99;
+                    costoTotal = (float) (costoTotal + 3.99);
                 } else if (entradaGPS.isSelected()) {
-                    costoTotal = costoTotal + 13.99;
+                    costoTotal = (float) (costoTotal + 13.99);
                 } else if (entradaAsiento.isSelected()) {
-                    costoTotal = costoTotal + 6.99;
+                    costoTotal = (float) (costoTotal + 6.99);
                 } else if (entradaCobertura.isSelected()) {
-                    costoTotal = costoTotal + 12.99;
+                    costoTotal = (float) (costoTotal + 12.99);
                 }
 
                 JOptionPane.showMessageDialog(null, "Se han ingresado los datos correctamente", "ÉXITO", JOptionPane.PLAIN_MESSAGE);
@@ -1202,31 +1185,32 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         } else {
             //Filtro solo por la el estilo de Vehiculo
             if (!"".equals(entradaEstiloFiltro.getText()) && entradaPrecioMenor.getText().equals("") && entradaCapacidadFiltro.getText().equals("") && entradaPrecioMayor.getText().equals("")) {
-                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and idEstado='1' and idEstilo='" + Integer.parseInt(entradaEstiloFiltro.getText()) + "'");
+                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "' and idEstilo='" + Integer.parseInt(entradaEstiloFiltro.getText()) + "'");
                 try {
                     while (res.next()) {
                         Vector v = new Vector();
 
-                        v.add(res.getInt(1));
-                        v.add(res.getInt(14));
-                        v.add(res.getInt(3));
+                        v.add(res.getString(1));
+                        v.add(res.getInt(15));
+                        v.add(res.getFloat(3));
                         modelo2.addRow(v);
                         jTable1.setModel(modelo2);
                     }
                 } catch (SQLException e) {
+                    System.out.println(e);
 
                 }
 
             }
             //Filtro de solo la Capacidad del Vehiculo
             if (!"".equals(entradaCapacidadFiltro.getText()) && entradaPrecioMenor.getText().equals("") && entradaEstiloFiltro.getText().equals("") && entradaPrecioMayor.getText().equals("")) {
-                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and idEstado='1' and capacidadPersonas='" + Integer.parseInt(entradaCapacidadFiltro.getText()) + "'");
+                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "' and capacidadPersonas='" + Integer.parseInt(entradaCapacidadFiltro.getText()) + "'");
                 try {
                     while (res.next()) {
                         Vector v = new Vector();
-                        v.add(res.getInt(1));
-                        v.add(res.getInt(14));
-                        v.add(res.getInt(3));
+                        v.add(res.getString(1));
+                        v.add(res.getInt(15));
+                        v.add(res.getFloat(3));
                         modelo2.addRow(v);
                         jTable1.setModel(modelo2);
                     }
@@ -1236,13 +1220,13 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
 
             } //Filtro solo del precio
             else if (!"".equals(entradaPrecioMenor.getText()) && !"".equals(entradaPrecioMayor.getText()) && entradaCapacidadFiltro.getText().equals("") && entradaEstiloFiltro.getText().equals("")) {
-                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and idEstado='1' and costoDia between '" + Integer.parseInt(entradaPrecioMenor.getText()) + "' and '" + Integer.parseInt(entradaPrecioMayor.getText()) + "' order by costoDia asc");
+                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "' and costoDia between '" + Integer.parseInt(entradaPrecioMenor.getText()) + "' and '" + Integer.parseInt(entradaPrecioMayor.getText()) + "' order by costoDia asc");
                 try {
                     while (res.next()) {
                         Vector v = new Vector();
-                        v.add(res.getInt(1));
-                        v.add(res.getInt(14));
-                        v.add(res.getInt(3));
+                        v.add(res.getString(1));
+                        v.add(res.getInt(15));
+                        v.add(res.getFloat(3));
                         modelo2.addRow(v);
                         jTable1.setModel(modelo2);
                     }
@@ -1252,13 +1236,13 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
 
             } //Filtro solo estilo y precio
             else if (!"".equals(entradaPrecioMenor.getText()) && !"".equals(entradaPrecioMayor.getText()) && entradaCapacidadFiltro.getText().equals("") && !"".equals(entradaEstiloFiltro.getText())) {
-                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and idEstado='1' and idEstilo='" + Integer.parseInt(entradaEstiloFiltro.getText()) + "' and costoDia between '" + Integer.parseInt(entradaPrecioMenor.getText()) + "' and '" + Integer.parseInt(entradaPrecioMayor.getText()) + "' order by costoDia asc");
+                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and idEstilo='" + Integer.parseInt(entradaEstiloFiltro.getText()) + "' and costoDia between '" + Integer.parseInt(entradaPrecioMenor.getText()) + "' and '" + Integer.parseInt(entradaPrecioMayor.getText()) + "' order by costoDia asc");
                 try {
                     while (res.next()) {
                         Vector v = new Vector();
-                        v.add(res.getInt(1));
-                        v.add(res.getInt(14));
-                        v.add(res.getInt(3));
+                        v.add(res.getString(1));
+                        v.add(res.getInt(15));
+                        v.add(res.getFloat(3));
                         modelo2.addRow(v);
                         jTable1.setModel(modelo2);
                     }
@@ -1268,13 +1252,13 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
 
             } //Filtro estilo y capacidad
             else if (!"".equals(entradaCapacidadFiltro.getText()) && entradaPrecioMenor.getText().equals("") && entradaPrecioMayor.getText().equals("") && !"".equals(entradaEstiloFiltro.getText())) {
-                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and idEstado='1' and idEstilo='" + Integer.parseInt(entradaEstiloFiltro.getText()) + "' and capacidadPersonas= '" + Integer.parseInt(entradaCapacidadFiltro.getText()) + "'");
+                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and idEstilo='" + Integer.parseInt(entradaEstiloFiltro.getText()) + "' and capacidadPersonas= '" + Integer.parseInt(entradaCapacidadFiltro.getText()) + "'");
                 try {
                     while (res.next()) {
                         Vector v = new Vector();
-                        v.add(res.getInt(1));
-                        v.add(res.getInt(14));
-                        v.add(res.getInt(3));
+                        v.add(res.getString(1));
+                        v.add(res.getInt(15));
+                        v.add(res.getFloat(3));
                         modelo2.addRow(v);
                         jTable1.setModel(modelo2);
                     }
@@ -1284,13 +1268,13 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
 
             } //Filtro capacidad y precio
             else if (!"".equals(entradaPrecioMenor.getText()) && !"".equals(entradaPrecioMayor.getText()) && !"".equals(entradaCapacidadFiltro.getText()) && entradaEstiloFiltro.getText().equals("")) {
-                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and idEstado='1' and capacidadPersonas='" + Integer.parseInt(entradaCapacidadFiltro.getText()) + "' and costoDia between '" + Integer.parseInt(entradaPrecioMenor.getText()) + "' and '" + Integer.parseInt(entradaPrecioMayor.getText()) + "' order by costoDia asc");
+                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and capacidadPersonas='" + Integer.parseInt(entradaCapacidadFiltro.getText()) + "' and costoDia between '" + Integer.parseInt(entradaPrecioMenor.getText()) + "' and '" + Integer.parseInt(entradaPrecioMayor.getText()) + "' order by costoDia asc");
                 try {
                     while (res.next()) {
                         Vector v = new Vector();
-                        v.add(res.getInt(1));
-                        v.add(res.getInt(14));
-                        v.add(res.getInt(3));
+                        v.add(res.getString(1));
+                        v.add(res.getInt(15));
+                        v.add(res.getFloat(3));
                         modelo2.addRow(v);
                         jTable1.setModel(modelo2);
                     }
@@ -1300,13 +1284,13 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
 
             } //Todos los filtros
             else if (!"".equals(entradaPrecioMenor.getText()) && !"".equals(entradaPrecioMayor.getText()) && !"".equals(entradaCapacidadFiltro.getText()) && !"".equals(entradaEstiloFiltro.getText())) {
-                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and idEstado='1' and capacidadPersonas='" + Integer.parseInt(entradaCapacidadFiltro.getText()) + "' and idEstilo=' " + Integer.parseInt(entradaCapacidadFiltro.getText()) + "' and costoDia between '" + Integer.parseInt(entradaPrecioMenor.getText()) + "' and '" + Integer.parseInt(entradaPrecioMayor.getText()) + "' order by costoDia asc");
+                res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where idSede='" + copiaSedeRecogida + "'and capacidadPersonas='" + Integer.parseInt(entradaCapacidadFiltro.getText()) + "' and idEstilo=' " + Integer.parseInt(entradaCapacidadFiltro.getText()) + "' and costoDia between '" + Integer.parseInt(entradaPrecioMenor.getText()) + "' and '" + Integer.parseInt(entradaPrecioMayor.getText()) + "' order by costoDia asc");
                 try {
                     while (res.next()) {
                         Vector v = new Vector();
-                        v.add(res.getInt(1));
-                        v.add(res.getInt(14));
-                        v.add(res.getInt(3));
+                        v.add(res.getString(1));
+                        v.add(res.getInt(15));
+                        v.add(res.getFloat(3));
                         modelo2.addRow(v);
                         jTable1.setModel(modelo2);
                     }
@@ -1332,10 +1316,10 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         // TODO add your handling code here:
         int row = jTable1.getSelectedRow();
 
-        int placa = Integer.parseInt(jTable1.getValueAt(row, 0).toString());
+        String placa = jTable1.getValueAt(row, 0).toString();
         res = Conexiones.Conexion.consulta("Select * from esquema.Vehiculo where placa='" + placa + "'");
         copiaPlacaR = jTable1.getValueAt(row, 0).toString();
-        costoTotal = costoTotal + Double.parseDouble(jTable1.getValueAt(row, 2).toString());
+        costoTotal = costoTotal + Float.parseFloat(jTable1.getValueAt(row, 2).toString());
         try {
             while (res.next()) {
 
@@ -1346,10 +1330,10 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                 cargarMaletas.setText(res.getString(7));
                 cargarMPG.setText(res.getString(8));
                 cargarKilometraje.setText(res.getString(9));
-                cargarTransmision.setText(res.getString(10));
-                cargarColor.setText(res.getString(11));
-                cargarMarca.setText(res.getString(12));
-                panelPrincipal.setSelectedIndex(5);
+                cargarTransmision.setText(res.getString(11));
+                cargarColor.setText(res.getString(12));
+                cargarMarca.setText(res.getString(13));
+                panelPrincipal.setSelectedIndex(4);
             }
 
         } catch (SQLException e) {
@@ -1359,27 +1343,6 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
     private void entradaCoberturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entradaCoberturaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_entradaCoberturaActionPerformed
-
-    private void cargarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarClienteActionPerformed
-        // TODO add your handling code here:
-        res = Conexiones.Conexion.consulta("Select * from esquema.Cliente where cedula='" + cedulaReserva + "'");
-        try {
-            while (res.next()) {
-                resultadoCedula.setText((res.getString(1)));
-                resultadoNombre.setText(res.getString(2));
-                resultadoApellido1.setText(res.getString(3));
-                resultadoApellido2.setText(res.getString(4));
-                resultadoCorreo.setText(res.getString(5));
-                resultadoTelefono.setText((res.getString(6)));
-                resultadoProvincia.setText(res.getString(7));
-                resultadoCanton.setText(res.getString(8));
-                resultadoDistrito.setText(res.getString(9));
-                resultadoSeñas.setText(res.getString(10));
-            }
-        } catch (SQLException e) {
-        }
-
-    }//GEN-LAST:event_cargarClienteActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -1391,14 +1354,9 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         panelPrincipal.setSelectedIndex(3);
     }//GEN-LAST:event_jButton8ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_jButton5ActionPerformed
-
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
-        panelPrincipal.setSelectedIndex(4);
+        panelPrincipal.setSelectedIndex(5);
 
         try {
             cargarCedulaReserva.setText(cedulaReserva);
@@ -1407,7 +1365,9 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             cargarFechaR.setText(copiaFechaR);
             cargarFechaE.setText(copiaFechaE);
             cargarPlacaReserva.setText(copiaPlacaR);
-            String costoString = String.valueOf(costoTotal);
+            cantidadDias = (int) (((copiaFechaRecogida.getTime() - copiaFechaEntrega.getTime()) / 86400000) * -1);
+            costoReserva = cantidadDias * costoTotal;
+            String costoString = String.valueOf(costoReserva);
             cargarCostoReserva.setText(costoString);
 
         } catch (HeadlessException e) {
@@ -1416,6 +1376,44 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        try {
+            java.util.Date objDate = new Date();
+            System.out.println(objDate);
+            SimpleDateFormat fecha = new SimpleDateFormat("MM/dd/yyyy");
+            String fechaSolicitud = fecha.format(objDate.getDate());
+
+            Procedimientos.ingresarReserva(fechaSolicitud, copiaFechaR, copiaFechaE, copiaSedeRecogida, copiaSedeEntrega, cedulaReserva, copiaPlacaR, "1", "1");
+            res = Conexiones.Conexion.consulta("select IDENT_CURRENT('esquema.Reserva')");
+            while (res.next()) {
+                idreserva = res.getInt(1);
+            }
+
+            Procedimientos.ingresarFactura(costoReserva, cedulaReserva, idreserva);
+            res = Conexiones.Conexion.consulta("select IDENT_CURRENT('esquema.Factura')");
+            while (res.next()) {
+                idfactura = res.getInt(1);
+            }
+
+            res = Conexiones.Conexion.consulta("Select * from esquema.Cliente");
+            while (res.next()) {
+                if (res.getString(1).equals(cedulaReserva)) {
+                    correoCliente = res.getString(5);
+                }
+            }
+
+            informacionReserva = ("Cédula del cliente: " + "\t" + cedulaReserva + "\n" + "Número de Reserva: " + "\t" + idreserva + "\n" + "Número de Factura: " + "\t" + idfactura + "\n" + "Fecha de Solicitud: " + "\t" + fechaSolicitud + "\n" + "Sede Recogida: " + "\t" + copiaSedeRecogida + "\t\t" + "Fecha Recogida: " + "\t" + copiaFechaR + "\n"
+                    + "Sede Entrega: " + "\t" + copiaSedeEntrega + "\t\t" + "Fecha Entrega: " + "\t" + copiaFechaR + "\n" + "Placa Vehículo:" + "\t" + copiaPlacaR + "\n" + "Costo Total de la Reserva:" + "\t" + costoReserva + "\n");
+
+            PDF.crearPDF(informacionReserva, correoCliente);
+
+            PrintPDF.printDocument();
+
+        } catch (SQLException | ParseException ex) {
+            Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, e);
+        }
+
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -1469,7 +1467,6 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
     private javax.swing.JLabel cargarAño;
     private javax.swing.JLabel cargarCapacidad;
     private javax.swing.JLabel cargarCedulaReserva;
-    private javax.swing.JButton cargarCliente;
     private javax.swing.JLabel cargarColor;
     private javax.swing.JLabel cargarCostoReserva;
     private javax.swing.JLabel cargarFechaE;
@@ -1506,7 +1503,6 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;

@@ -9,7 +9,6 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.sql.Blob;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import prograbases1.Correo;
 import prograbases1.Password;
 
@@ -125,26 +124,43 @@ public class Procedimientos {
         ingreso.execute();
         Correo.enviarCorreoOperador(correo, contraseña, usuario);
     }
-    
-    public static void ingresarRecorrido(String fechaRecorrido, String puntoALat, String puntoALon, String puntoBLat, String puntoBLon) throws SQLException, ParseException {
-        CallableStatement recorrido = Conexion.getConexion().prepareCall("{call ingresarRecorrido(?,?,?,?,?)}");
-        String fecha=fechaRecorrido.replace('-', '/');
-        System.out.println("%" + fecha);
-//        float a = (float)puntoALat;
-//        float b = (float)puntoALon;
-//        float c = (float)puntoBLat;
-//        float d = (float)puntoBLon;
-//        SimpleDateFormat fechaF = new SimpleDateFormat("MM/dd/yyyy");
-//        String fechaEX = fechaF.format(fechaRecorrido);
-//        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-//        java.util.Date date = sdf1.parse(fechaRecorrido);
-//        java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-//        System.out.println("+" + sqlStartDate);
-        recorrido.setString(1, fecha);
-        recorrido.setString(2, puntoALat);
-        recorrido.setString(3, puntoALon);
-        recorrido.setString(4, puntoBLat);
-        recorrido.setString(5, puntoBLon);
+
+    public static void ingresarRecorrido(String puntoALat, String puntoALon, String puntoBLat, String puntoBLon) throws SQLException, ParseException {
+        CallableStatement recorrido = Conexion.getConexion().prepareCall("{call ingresarRecorrido(?,?,?,?)}");
+        recorrido.setString(1, puntoALat);
+        recorrido.setString(2, puntoALon);
+        recorrido.setString(3, puntoBLat);
+        recorrido.setString(4, puntoBLon);
         recorrido.execute();
     }
+
+    public static void ingresarReserva(String fechaSolicitud, String fechaInicio, String fechaFinal, String sedeEntrega, String sedeRecogido, String cedulaCliente, String placaVehiculo, String idOperador, String idRecorrido) throws SQLException, ParseException {
+        CallableStatement reserva = Conexion.getConexion().prepareCall("{call ingresarReserva(?,?,?,?,?,?,?,?,?)}");
+        reserva.setString(1, fechaSolicitud);
+        reserva.setString(2, fechaInicio);
+        reserva.setString(3, fechaFinal);
+        reserva.setString(5, sedeEntrega);
+        reserva.setString(6, sedeRecogido);
+        reserva.setString(7, placaVehiculo);
+        reserva.setString(8, idOperador);
+        reserva.setString(9, idRecorrido);
+        reserva.execute();
+    }
+
+    public static void ingresarFactura(Float costoTotal, String cedulaCliente, int idReserva) throws SQLException, ParseException {
+        CallableStatement factura = Conexion.getConexion().prepareCall("{call ingresarFactura(?,?,?)}");
+        factura.setString(1, Float.toString(costoTotal));
+        factura.setString(2, cedulaCliente);
+        factura.setString(3, Integer.toString(idReserva));
+        factura.execute();
+    }
+
+    public static void ingresarReservaServicioOpcionales(String idReserva, String cedulaCliente, String idServicioOpcional) throws SQLException, ParseException {
+        CallableStatement reservaServicioOpcionales = Conexion.getConexion().prepareCall("{call ingresarReservaServicioOpcionales(?,?,?)}");
+        reservaServicioOpcionales.setString(1, idReserva);
+        reservaServicioOpcionales.setString(2, cedulaCliente);
+        reservaServicioOpcionales.setString(3, idServicioOpcional);
+        reservaServicioOpcionales.execute();
+    }
+
 }

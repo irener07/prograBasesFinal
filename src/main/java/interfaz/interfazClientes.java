@@ -9,7 +9,7 @@ package interfaz;
  *
  * @author win8
  */
-
+import Conexiones.*;
 import javax.swing.JOptionPane;
 import Conexiones.Procedimientos;
 import java.awt.Image;
@@ -29,9 +29,9 @@ public class interfazClientes extends javax.swing.JFrame {
     static ResultSet res;
     int cont;
     String filename = null;
-    byte[] icono; 
-    Blob blob;     
-    
+    byte[] icono;
+    Blob blob;
+
     public interfazClientes() {
         initComponents();
         entradaProvincia.removeAllItems();
@@ -39,40 +39,41 @@ public class interfazClientes extends javax.swing.JFrame {
         entradaDistrito.removeAllItems();
         cargarDato();
     }
-    public void cargarDato(){
-        res = Conexiones.Conexion.consulta("select * from esquema.Provincia");
-        try{
-            while(res.next()){
-                entradaProvincia.addItem(res.getString(2));
+
+    public void cargarDato() {
+        res = Conexion.consulta("select * from esquema.Provincia order by idProvincia asc");
+        try {
+            while (res.next()) {
+                entradaProvincia.addItem(res.getString(1));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
+        }
     }
-    }
-    
-    public void CargarCanton(String canton){
-        entradaCanton.removeAllItems();
-        res = Conexiones.Conexion.consulta("Select * from esquema.Canton");
-        try{
-            while(res.next()){
-                if(res.getString(3).equals(canton)){
-                    entradaCanton.addItem(res.getString(2));
+
+    public void CargarCanton(String canton) {
+        res = Conexion.consulta("Select * from esquema.Canton");
+        try {
+            while (res.next()) {
+                if (res.getString(3).equals(canton)) {
+                    entradaCanton.addItem(res.getString(1));
                 }
             }
-        }catch(SQLException e){
-        }   
+        } catch (SQLException e) {
+        }
     }
-    public void CargarDistrito(String distrito){
+
+    public void CargarDistrito(String distrito) {
         entradaDistrito.removeAllItems();
-        res = Conexiones.Conexion.consulta("Select * from esquema.Distrito");
-        try{
-            while(res.next()){
-                if(res.getString(3).equals(distrito)){
-                    entradaDistrito.addItem(res.getString(2));
+        res = Conexion.consulta("Select * from esquema.Distrito");
+        try {
+            while (res.next()) {
+                if (res.getString(3).equals(distrito)) {
+                    entradaDistrito.addItem(res.getString(1));
                 }
             }
-        }catch(SQLException e){
-        }   
-    }    
+        } catch (SQLException e) {
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -436,56 +437,56 @@ public class interfazClientes extends javax.swing.JFrame {
 
     private void ingresarClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ingresarClientesActionPerformed
         // TODO add your handling code here:
-        if(entradaCedula.getText().isEmpty()||entradaNombre.getText().isEmpty()||entradaApellido1.getText().isEmpty()||entradaApellido2.getText().isEmpty()
-                || entradaCorreo.getText().isEmpty()||entradaTelef.getText().isEmpty()|| entradaSeñas.getText().isEmpty()||entradaNumeroLicencia.getText().isEmpty()||
-                entradaTipoLicencia.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Ingrese todos los datos","Información",JOptionPane.INFORMATION_MESSAGE);            
-        }else{
-            res = Conexiones.Conexion.consulta("Select COUNT(cedula)from esquema.Cliente where cedula='"+entradaCedula.getText()+"'");
-            try{
-                while(res.next()){
-                    cont= res.getInt(1);
+        if (entradaCedula.getText().isEmpty() || entradaNombre.getText().isEmpty() || entradaApellido1.getText().isEmpty() || entradaApellido2.getText().isEmpty()
+                || entradaCorreo.getText().isEmpty() || entradaTelef.getText().isEmpty() || entradaSeñas.getText().isEmpty() || entradaNumeroLicencia.getText().isEmpty()
+                || entradaTipoLicencia.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese todos los datos", "Información", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            res = Conexiones.Conexion.consulta("Select COUNT(cedula)from esquema.Cliente where cedula='" + entradaCedula.getText() + "'");
+            try {
+                while (res.next()) {
+                    cont = res.getInt(1);
                 }
-            }catch(SQLException e){
+            } catch (SQLException e) {
             }
-            if(cont>=1){
-                JOptionPane.showMessageDialog(this, "Este elemento ya existe","Informacion",JOptionPane.INFORMATION_MESSAGE);
-            }else{
+            if (cont >= 1) {
+                JOptionPane.showMessageDialog(this, "Este elemento ya existe", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+            } else {
                 System.out.println("Llega aca");
                 try {
-                    Procedimientos.ingresoCliente(entradaCedula.getText().toString(),entradaNombre.getText(),entradaApellido1.getText(),entradaApellido2.getText(),entradaCorreo.getText(),entradaTelef.getText().toString(),entradaProvincia.getSelectedItem().toString(),entradaCanton.getSelectedItem().toString(),entradaDistrito.getSelectedItem().toString(), entradaSeñas.getText());
+                    Procedimientos.ingresoCliente(entradaCedula.getText().toString(), entradaNombre.getText(), entradaApellido1.getText(), entradaApellido2.getText(), entradaCorreo.getText(), entradaTelef.getText().toString(), entradaProvincia.getSelectedItem().toString(), entradaCanton.getSelectedItem().toString(), entradaDistrito.getSelectedItem().toString(), entradaSeñas.getText());
                 } catch (SQLException e) {
                 }
                 JOptionPane.showMessageDialog(this, "Los datos han sido guardados correctamente");
             }
             //// LICENCIA ////
-            res = Conexiones.Conexion.consulta("Select COUNT(numeroLicencia)from esquema.Licencia where numeroLicencia='"+entradaNumeroLicencia.getText()+"'");            
-            try{
-                while(res.next()){
-                    cont= res.getInt(1);
+            res = Conexiones.Conexion.consulta("Select COUNT(numeroLicencia)from esquema.Licencia where numeroLicencia='" + entradaNumeroLicencia.getText() + "'");
+            try {
+                while (res.next()) {
+                    cont = res.getInt(1);
                 }
-            }catch(SQLException e){
+            } catch (SQLException e) {
             }
-            if(cont>=1){
-                JOptionPane.showMessageDialog(this, "Esta licencia ya existe","Informacion",JOptionPane.INFORMATION_MESSAGE);
-            }else{
+            if (cont >= 1) {
+                JOptionPane.showMessageDialog(this, "Esta licencia ya existe", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+            } else {
                 System.out.println("Llega aca");
                 try {
-                    blob = new javax.sql.rowset.serial.SerialBlob(icono);                    
+                    blob = new javax.sql.rowset.serial.SerialBlob(icono);
                     SimpleDateFormat fecha = new SimpleDateFormat("MM/dd/yyyy");
                     String fechaE = fecha.format(entradaFechaEmision.getDate());
                     SimpleDateFormat fechaF = new SimpleDateFormat("MM/dd/yyyy");
                     String fechaEX = fechaF.format(entradaFechaExpiracion.getDate());
                     System.out.println(fechaE);
                     System.out.println(fechaEX);
-                    
-                    Procedimientos.ingresoLicencia(entradaNumeroLicencia.getText(),entradaTipoLicencia.getText(),fechaE,fechaEX,blob,entradaCedula.getText());
+
+                    Procedimientos.ingresoLicencia(entradaNumeroLicencia.getText(), entradaTipoLicencia.getText(), fechaE, fechaEX, blob, entradaCedula.getText());
                 } catch (SQLException e) {
                 }
                 JOptionPane.showMessageDialog(this, "La licencia ha sido guardada correctamente");
             }
         }
-        
+
     }//GEN-LAST:event_ingresarClientesActionPerformed
 
     private void limpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limpiarActionPerformed
@@ -502,36 +503,36 @@ public class interfazClientes extends javax.swing.JFrame {
     }//GEN-LAST:event_limpiarActionPerformed
 
     private void ingresarImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ingresarImagenActionPerformed
-        JFileChooser elegida = new  JFileChooser();
-        FileNameExtensionFilter fil = new FileNameExtensionFilter("JPG, PNG & GIF","jpg","png");
+        JFileChooser elegida = new JFileChooser();
+        FileNameExtensionFilter fil = new FileNameExtensionFilter("JPG, PNG & GIF", "jpg", "png");
         elegida.setFileFilter(fil);
         elegida.showOpenDialog(null);
         File f = elegida.getSelectedFile();
         filename = f.getAbsolutePath();
         txtRuta.setText(filename);
         System.out.println(filename);
-        ImageIcon imageIcon = new ImageIcon(new ImageIcon(filename).getImage().getScaledInstance(fotoLicencia.getWidth(),fotoLicencia.getHeight(),Image.SCALE_SMOOTH));
+        ImageIcon imageIcon = new ImageIcon(new ImageIcon(filename).getImage().getScaledInstance(fotoLicencia.getWidth(), fotoLicencia.getHeight(), Image.SCALE_SMOOTH));
         fotoLicencia.setIcon(imageIcon);
-        try{
+        try {
             icono = new byte[(int) filename.length()];
             InputStream input = new FileInputStream(filename);
             input.read(icono);
             System.out.println(icono);
-        }catch(Exception ex){
+        } catch (Exception ex) {
         }
     }//GEN-LAST:event_ingresarImagenActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        CargarCanton(entradaProvincia.getSelectedItem().toString());        
+        CargarCanton(entradaProvincia.getSelectedItem().toString());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         TablaCanton indice = new TablaCanton();
         indice.setVisible(true);
-        indice.setDefaultCloseOperation(interfazIngresarVehiculo.HIDE_ON_CLOSE);        
-        
+        indice.setDefaultCloseOperation(interfazIngresarVehiculo.HIDE_ON_CLOSE);
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -543,14 +544,13 @@ public class interfazClientes extends javax.swing.JFrame {
         // TODO add your handling code here:
         buscarDistritos indice = new buscarDistritos();
         indice.setVisible(true);
-        indice.setDefaultCloseOperation(interfazIngresarVehiculo.HIDE_ON_CLOSE);             
+        indice.setDefaultCloseOperation(interfazIngresarVehiculo.HIDE_ON_CLOSE);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void entradaProvinciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entradaProvinciaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_entradaProvinciaActionPerformed
 
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField entradaApellido1;
