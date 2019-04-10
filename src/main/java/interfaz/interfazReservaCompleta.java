@@ -37,6 +37,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
     int cont;
     String fechaA;
     String fechaB;
+    public static int idoperador;
     public int idreserva;
     public int idfactura;
     public int idRecorrido;
@@ -62,6 +63,14 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         entradaSedeRecogida.removeAllItems();
         entradaSedeEntrega.removeAllItems();
         cargarSede();
+    }
+
+    public static int getIDOperadorMenu() {
+        return idoperador;
+    }
+
+    public static void setIDOPeradorMenu(int id) {
+        idoperador = id;
     }
 
     public void cargarSede() {
@@ -1489,7 +1498,7 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             String fechaSolicitud = fecha3.format(objDate.getDate());
             System.out.println("&&" + fechaSolicitud);
 
-            Procedimientos.ingresarReserva(fechaA, fechaA, fechaB, entradaSedeRecogida.getSelectedItem().toString(), entradaSedeEntrega.getSelectedItem().toString(), cedulaReserva, copiaPlacaR, "1");
+            Procedimientos.ingresarReserva(fechaA, fechaA, fechaB, entradaSedeRecogida.getSelectedItem().toString(), entradaSedeEntrega.getSelectedItem().toString(), cedulaReserva, copiaPlacaR, Integer.toString(idoperador));
             res = Conexiones.Conexion.consulta("select IDENT_CURRENT('esquema.Reserva')");
             while (res.next()) {
                 idreserva = res.getInt(1);

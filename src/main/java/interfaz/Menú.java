@@ -13,12 +13,22 @@ import java.io.File;
  */
 public class Menú extends javax.swing.JFrame {
 
+    public static int idOperador;
+
     /**
      * Creates new form Menú
      */
     public Menú() {
         initComponents();
         System.out.println(new File(".").getAbsolutePath());
+    }
+
+    public static int getIDOperadorMenu() {
+        return idOperador;
+    }
+
+    public static void setIDOPeradorMenu(int id) {
+        idOperador = id;
     }
 
     /**
@@ -239,6 +249,7 @@ public class Menú extends javax.swing.JFrame {
         // TODO add your handling code here:
         interfazReservaCompleta interfazR = new interfazReservaCompleta();
         interfazR.setVisible(true);
+        interfazR.setIDOPeradorMenu(idOperador);
         interfazR.setLocationRelativeTo(null);
         interfazR.setDefaultCloseOperation(interfazR.HIDE_ON_CLOSE);
     }//GEN-LAST:event_jButton5ActionPerformed

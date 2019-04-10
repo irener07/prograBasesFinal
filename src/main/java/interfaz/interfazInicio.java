@@ -17,7 +17,7 @@ import Conexiones.*;
 public class interfazInicio extends javax.swing.JFrame {
 
     static ResultSet res;
-    public static String OperadorActual;
+    public static int OperadorActual;
 
     /**
      * Creates new form interfazInicio
@@ -26,7 +26,7 @@ public class interfazInicio extends javax.swing.JFrame {
         initComponents();
     }
 
-    public static String getIDOperador() {
+    public static int getIDOperador() {
         return OperadorActual;
     }
 
@@ -166,35 +166,36 @@ public class interfazInicio extends javax.swing.JFrame {
                     while (res.next()) {
                         if (res.getString(2).equals(a) && res.getString(3).equals(c)) {
                             JOptionPane.showMessageDialog(this, "Se ha verificado las credenciales exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
-                            OperadorActual = res.getString(1);
+                            OperadorActual = res.getInt(1);
                             jTextField1.setText("");
                             jTextField1.requestFocus();
                             jPasswordField1.setText("");
                             jPasswordField1.requestFocus();
                             Menú obj = new Menú();
                             obj.setVisible(true);
+                            obj.setIDOPeradorMenu(OperadorActual);
                             this.dispose();
                         }
-                        JOptionPane.showMessageDialog(this, "No se ha podido verificar las credenciales", "ERROR", JOptionPane.ERROR_MESSAGE);
-
                     }
+
                 } else {
                     res = Conexion.consulta("select * from esquema.Operador");
                     while (res.next()) {
                         if (res.getString(4).equals(a) && res.getString(3).equals(c)) {
                             JOptionPane.showMessageDialog(this, "Se ha verificado las credenciales exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
-                            OperadorActual = res.getString(1);
+                            OperadorActual = res.getInt(1);
                             jTextField1.setText("");
                             jTextField1.requestFocus();
                             jPasswordField1.setText("");
                             jPasswordField1.requestFocus();
                             Menú obj = new Menú();
                             obj.setVisible(true);
+                            obj.setIDOPeradorMenu(OperadorActual);
                             this.dispose();
                         }
-                        JOptionPane.showMessageDialog(this, "No se ha podido verificar las credenciales", "ERROR", JOptionPane.ERROR_MESSAGE);
 
                     }
+
                 }
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(this, "No se ha podido verificar las credenciales", "ERROR", JOptionPane.ERROR_MESSAGE);
