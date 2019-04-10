@@ -1495,10 +1495,10 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             java.util.Date objDate = new Date();
             System.out.println(objDate);
             SimpleDateFormat fecha3 = new SimpleDateFormat("MM/dd/yyyy");
-            String fechaSolicitud = fecha3.format(objDate.getDate());
+            String fechaSolicitud = fecha3.format(objDate.getTime());
             System.out.println("&&" + fechaSolicitud);
 
-            Procedimientos.ingresarReserva(fechaA, fechaA, fechaB, entradaSedeRecogida.getSelectedItem().toString(), entradaSedeEntrega.getSelectedItem().toString(), cedulaReserva, copiaPlacaR, Integer.toString(idoperador));
+            Procedimientos.ingresarReserva(fechaSolicitud, fechaA, fechaB, entradaSedeRecogida.getSelectedItem().toString(), entradaSedeEntrega.getSelectedItem().toString(), cedulaReserva, copiaPlacaR, Integer.toString(idoperador));
             res = Conexiones.Conexion.consulta("select IDENT_CURRENT('esquema.Reserva')");
             while (res.next()) {
                 idreserva = res.getInt(1);
@@ -1529,8 +1529,8 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                 Procedimientos.ingresarReservaServicioOpcionales(Integer.toString(idreserva), cedulaReserva, "5");
             }
 
-            informacionReserva = ("Cédula del cliente: " + "\t" + cedulaReserva + "\n" + "Número de Reserva: " + "\t" + idreserva + "\n" + "Número de Factura: " + "\t" + idfactura + "\n" + "Fecha de Solicitud: " + "\t" + fechaSolicitud + "\n" + "Sede Recogida: " + "\t" + copiaSedeRecogida + "\t" + "\t" + "Fecha Recogida: " + "\t" + copiaFechaR + "\n"
-                    + "Sede Entrega: " + "\t" + copiaSedeEntrega + "\t" + "\t" + "Fecha Entrega: " + "\t" + copiaFechaR + "\n" + "Placa Vehículo:" + "\t" + copiaPlacaR + "\n" + "Costo Total de la Reserva:" + "\t" + costoReserva + "\n");
+            informacionReserva = ("Cédula del cliente: \t" + cedulaReserva + "\n" + "Número de Reserva: \t" + idreserva + "\n" + "Número de Factura: \t" + idfactura + "\n" + "Fecha de Solicitud: \t" + fechaSolicitud + "\n" + "Sede Recogida: \t" + copiaSedeRecogida +  "\n" + "Fecha Recogida: \t" + copiaFechaR + "\n"
+                    + "Sede Entrega: \t" + copiaSedeEntrega + "\n" + "Fecha Entrega: \t" + copiaFechaR + "\n" + "Número de Operador: \t" + idoperador + "\n" + "Placa Vehículo: \t" + copiaPlacaR + "\n" + "Costo Total de la Reserva: \t$" + costoReserva + "\n");
 
             PDF.crearPDF(informacionReserva, correoCliente);
 
