@@ -35,6 +35,8 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
     public static String correoCliente;
     static ResultSet res;
     int cont;
+    String fechaA;
+    String fechaB;
     public int idreserva;
     public int idfactura;
     public int idRecorrido;
@@ -1146,6 +1148,10 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
                 copiaFechaEntrega = entradaFechaEntrega.getDate();
                 copiaFecha2 = new java.sql.Date(copiaFechaEntrega.getTime());
                 copiaFechaE = copiaFecha2.toString();
+                SimpleDateFormat fecha1 = new SimpleDateFormat("MM/dd/yyyy");
+                fechaA = fecha1.format(entradaFechaRecogida.getDate());
+                SimpleDateFormat fecha2 = new SimpleDateFormat("MM/dd/yyyy");
+                fechaB = fecha2.format(entradaFechaEntrega.getDate());
                 Calendar hoy = Calendar.getInstance(); //obtiene la fecha actual
                 int anio = hoy.get(Calendar.YEAR);
                 int mes = hoy.get(Calendar.MONTH);
@@ -1362,8 +1368,8 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             cargarCedulaReserva.setText(cedulaReserva);
             cargarSedeR.setText(copiaSedeRecogida);
             cargarSedeE.setText(copiaSedeEntrega);
-            cargarFechaR.setText(copiaFechaR);
-            cargarFechaE.setText(copiaFechaE);
+            cargarFechaR.setText(fechaA);
+            cargarFechaE.setText(fechaB);
             cargarPlacaReserva.setText(copiaPlacaR);
             cantidadDias = (int) (((copiaFechaRecogida.getTime() - copiaFechaEntrega.getTime()) / 86400000) * -1);
             costoReserva = cantidadDias * costoTotal;
@@ -1379,10 +1385,11 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
         try {
             java.util.Date objDate = new Date();
             System.out.println(objDate);
-            SimpleDateFormat fecha = new SimpleDateFormat("MM/dd/yyyy");
-            String fechaSolicitud = fecha.format(objDate.getDate());
+            SimpleDateFormat fecha3 = new SimpleDateFormat("MM/dd/yyyy");
+            String fechaSolicitud = fecha3.format(objDate.getDate());
+            System.out.println("&&"+fechaSolicitud);
 
-            Procedimientos.ingresarReserva(fechaSolicitud, copiaFechaR, copiaFechaE, copiaSedeRecogida, copiaSedeEntrega, cedulaReserva, copiaPlacaR, "1", "1");
+            Procedimientos.ingresarReserva(fechaA, fechaA, fechaB, entradaSedeRecogida.getSelectedItem().toString(), entradaSedeEntrega.getSelectedItem().toString(), cedulaReserva, copiaPlacaR, "1");
             res = Conexiones.Conexion.consulta("select IDENT_CURRENT('esquema.Reserva')");
             while (res.next()) {
                 idreserva = res.getInt(1);
@@ -1409,8 +1416,10 @@ public class interfazReservaCompleta extends javax.swing.JFrame {
             PrintPDF.printDocument();
 
         } catch (SQLException | ParseException ex) {
+            System.out.println(ex);
             Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception e) {
+            System.out.println(e);
             Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, e);
         }
 

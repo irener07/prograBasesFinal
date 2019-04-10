@@ -134,16 +134,16 @@ public class Procedimientos {
         recorrido.execute();
     }
 
-    public static void ingresarReserva(String fechaSolicitud, String fechaInicio, String fechaFinal, String sedeEntrega, String sedeRecogido, String cedulaCliente, String placaVehiculo, String idOperador, String idRecorrido) throws SQLException, ParseException {
-        CallableStatement reserva = Conexion.getConexion().prepareCall("{call ingresarReserva(?,?,?,?,?,?,?,?,?)}");
+    public static void ingresarReserva(String fechaSolicitud, String fechaInicio, String fechaFinal, String sedeEntrega, String sedeRecogido, String cedulaCliente, String placaVehiculo, String idOperador) throws SQLException, ParseException {
+        CallableStatement reserva = Conexion.getConexion().prepareCall("{call ingresarReserva(?,?,?,?,?,?,?,?)}");
         reserva.setString(1, fechaSolicitud);
         reserva.setString(2, fechaInicio);
         reserva.setString(3, fechaFinal);
-        reserva.setString(5, sedeEntrega);
-        reserva.setString(6, sedeRecogido);
+        reserva.setString(4, sedeEntrega);
+        reserva.setString(5, sedeRecogido);
+        reserva.setString(6, cedulaCliente);
         reserva.setString(7, placaVehiculo);
         reserva.setString(8, idOperador);
-        reserva.setString(9, idRecorrido);
         reserva.execute();
     }
 
