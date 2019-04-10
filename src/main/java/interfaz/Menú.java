@@ -109,6 +109,11 @@ public class Menú extends javax.swing.JFrame {
         });
 
         jButton7.setText("Cargar Recorrido");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -244,6 +249,15 @@ public class Menú extends javax.swing.JFrame {
         obj.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        interfazMapa mapa = new interfazMapa();
+        mapa.setVisible(true);
+        mapa.setLocationRelativeTo(null);
+        mapa.setDefaultCloseOperation(interfazIngresarVehiculo.HIDE_ON_CLOSE);
+
+    }//GEN-LAST:event_jButton7ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

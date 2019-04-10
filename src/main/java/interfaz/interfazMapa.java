@@ -7,6 +7,7 @@ package interfaz;
 
 import Conexiones.Procedimientos;
 import Maps.*;
+import Conexiones.*;
 import com.google.maps.errors.ApiException;
 import com.opencsv.CSVReader;
 import java.awt.HeadlessException;
@@ -15,6 +16,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -32,6 +35,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class interfazMapa extends javax.swing.JFrame {
 
     SwingBrowser browser = new SwingBrowser();
+    static ResultSet res;
+    String idreserva;
+    int cont;
+    String idrecorrido;
     java.sql.Date fechaE;
     public static final String SEPARADOR = ",";
     public static String nombreArchivo;
@@ -60,7 +67,7 @@ public class interfazMapa extends javax.swing.JFrame {
         panelMapa = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        idReserva = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -74,7 +81,7 @@ public class interfazMapa extends javax.swing.JFrame {
         );
         panelMapaLayout.setVerticalGroup(
             panelMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 281, Short.MAX_VALUE)
+            .addGap(0, 321, Short.MAX_VALUE)
         );
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -83,20 +90,25 @@ public class interfazMapa extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
         jLabel2.setText("ID de Reserva:");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        idReserva.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                idReservaActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Cargar CSV");
+        jButton1.setText("Cargar Nuevo Recorrido");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Verificar ID Reserva");
+        jButton2.setText("Ver Recorrido Anterior");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -109,17 +121,19 @@ public class interfazMapa extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(idReserva, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 235, Short.MAX_VALUE)
+                .addGap(0, 236, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(301, 301, 301))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton2)
-                        .addGap(85, 85, 85)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel1))
-                .addGap(301, 301, 301))
+                        .addGap(52, 52, 52)
+                        .addComponent(jButton1)
+                        .addGap(261, 261, 261))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,12 +143,12 @@ public class interfazMapa extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(idReserva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addComponent(panelMapa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -159,128 +173,193 @@ public class interfazMapa extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void idReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idReservaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_idReservaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        panelMapa.repaint();
-        JFileChooser elegida = new JFileChooser();
-        FileNameExtensionFilter fil = new FileNameExtensionFilter("CSV", "csv");
-        elegida.setFileFilter(fil);
-        elegida.showOpenDialog(null);
-        File f = elegida.getSelectedFile();
-        CSVReader csvReader = null;
+        if (idReserva.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el ID de la Reserva", "Información", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            idreserva = idReserva.getText();
+            res = Conexiones.Conexion.consulta("Select COUNT(idReserva) from esquema.Reserva where idReserva='" + Integer.parseInt(idreserva) + "'");
+            try {
+                while (res.next()) {
+                    cont = res.getInt(1);
 
-        try {
-            csvReader = new CSVReader(new FileReader(f), ',', '\n', 0);
-
-            List<String[]> rows = new ArrayList<>();
-            rows = csvReader.readAll();
-            String coor = "";
-
-            for (String[] row : rows) {
-                coor = coor + "+" + (Arrays.toString(row));
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            coor = coor.replace("+", "").replace("[", "").replace("]", ",");
-            String[] parts = coor.split(",");
-
-            if (parts.length < 5) {
-                nombreArchivo = f.getName();
-                nombreArchivo = nombreArchivo.replaceAll(".csv", "");
-                System.out.println("-" + nombreArchivo);
-                //  SimpleDateFormat fecha = new SimpleDateFormat("yyyy/MM/dd");
-                //    fechaE = (Date) fecha.parse(nombreArchivo);
-                //        fechaE = new java.sql.Date(date.get());
-                //  System.out.println(fechaE.getDate());
-                puntoALat = Double.parseDouble(parts[0].replace(" ", ""));
-                puntoALong = Double.parseDouble(parts[1].replace(" ", ""));
-                puntoBLat = Double.parseDouble(parts[2].replace(" ", ""));
-                puntoBLong = Double.parseDouble(parts[3].replace(" ", ""));
-                
-                String ALat = (parts[0].replace(" ", ""));
-                String ALong =(parts[1].replace(" ", ""));
-                String BLat = (parts[2].replace(" ", ""));
-                String BLong =(parts[3].replace(" ", ""));
-
+            if (cont >= 0) {
                 try {
-                    Maps.routeMap(puntoALat, puntoALong, puntoBLat, puntoBLong);
-                } catch (ApiException | InterruptedException | URISyntaxException ex) {
-                    Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                try {
-                    browser.loadURL(Maps.routeMap(puntoALat, puntoALong, puntoBLat, puntoBLong));
-                } catch (ApiException | InterruptedException | URISyntaxException ex) {
-                    Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                browser.setBounds(1, 1, panelMapa.getWidth(), panelMapa.getHeight());
-                panelMapa.add(browser);
-                try {
-                    System.out.println(ALat + "\n" + ALong + "\n" + BLat + "\n" + BLong + "\n");
-                    Procedimientos.ingresarRecorrido(ALat, ALong, BLat, BLong);
-                } catch (SQLException | ParseException ex) {
+                    res = Conexion.consulta("Select * from esquema.Reserva where idReserva='" + Integer.parseInt(idreserva) + "'");
+                    
+                    while (res.next()) {
+                        idrecorrido = Integer.toString(res.getInt(10));
+                        
+                        if (idrecorrido == null) {
+                            JOptionPane.showMessageDialog(this, "No se ha podido verificar el recorrido de la reserva", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            panelMapa.repaint();
+                            JFileChooser elegida = new JFileChooser();
+                            FileNameExtensionFilter fil = new FileNameExtensionFilter("CSV", "csv");
+                            elegida.setFileFilter(fil);
+                            elegida.showOpenDialog(null);
+                            File f = elegida.getSelectedFile();
+                            CSVReader csvReader = null;
+                            
+                            try {
+                                csvReader = new CSVReader(new FileReader(f), ',', '\n', 0);
+                                
+                                List<String[]> rows = new ArrayList<>();
+                                rows = csvReader.readAll();
+                                String coor = "";
+                                
+                                for (String[] row : rows) {
+                                    coor = coor + "+" + (Arrays.toString(row));
+                                }
+                                
+                                coor = coor.replace("+", "").replace("[", "").replace("]", ",");
+                                String[] parts = coor.split(",");
+                                
+                                if (parts.length < 5) {
+                                    nombreArchivo = f.getName();
+                                    nombreArchivo = nombreArchivo.replaceAll(".csv", "");
+                                    System.out.println("-" + nombreArchivo);
+                                    //  SimpleDateFormat fecha = new SimpleDateFormat("yyyy/MM/dd");
+                                    //    fechaE = (Date) fecha.parse(nombreArchivo);
+                                    //        fechaE = new java.sql.Date(date.get());
+                                    //  System.out.println(fechaE.getDate());
+                                    puntoALat = Double.parseDouble(parts[0].replace(" ", ""));
+                                    puntoALong = Double.parseDouble(parts[1].replace(" ", ""));
+                                    puntoBLat = Double.parseDouble(parts[2].replace(" ", ""));
+                                    puntoBLong = Double.parseDouble(parts[3].replace(" ", ""));
+                                    
+                                    String ALat = (parts[0].replace(" ", ""));
+                                    String ALong = (parts[1].replace(" ", ""));
+                                    String BLat = (parts[2].replace(" ", ""));
+                                    String BLong = (parts[3].replace(" ", ""));
+                                    
+                                    try {
+                                        Maps.routeMap(puntoALat, puntoALong, puntoBLat, puntoBLong);
+                                    } catch (ApiException | InterruptedException | URISyntaxException ex) {
+                                        Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    try {
+                                        browser.loadURL(Maps.routeMap(puntoALat, puntoALong, puntoBLat, puntoBLong));
+                                    } catch (ApiException | InterruptedException | URISyntaxException ex) {
+                                        Logger.getLogger(interfazReservaCompleta.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    browser.setBounds(1, 1, panelMapa.getWidth(), panelMapa.getHeight());
+                                    panelMapa.add(browser);
+                                    try {
+                                        System.out.println(ALat + "\n" + ALong + "\n" + BLat + "\n" + BLong + "\n");
+                                        Procedimientos.ingresarRecorrido(ALat, ALong, BLat, BLong);
+                                    } catch (SQLException | ParseException ex) {
+                                        Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    
+                                    res = Conexion.consulta("select IDENT_CURRENT('esquema.Recorrido')");
+                                    while (res.next()) {
+                                        idrecorrido = Integer.toString(res.getInt(1));
+                                    }
+                                    
+                                    PreparedStatement pps = Conexion.getConexion().prepareStatement("update esquema.Reserva set idRecorrido='" + idrecorrido + "' where idReserva ='" + idReserva.getText() + "'");
+                                    pps.executeUpdate();
+                                    JOptionPane.showMessageDialog(null, "Los datos ha sido modificados");
+                                    
+                                } else {
+                                    JOptionPane.showMessageDialog(this, "No se ha cargado el archivo CSV", "ERROR", JOptionPane.ERROR_MESSAGE);
+                                }
+                                
+                            } catch (HeadlessException | IOException | NumberFormatException ee) {
+                            } catch (SQLException ex) {
+                                Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
+                            } finally {
+                                try {
+                                    //closing the reader
+                                    csvReader.close();
+                                } catch (Exception ee) {
+                                    ee.printStackTrace();
+                                }
+                            }
+                        }}
+                } catch (SQLException ex) {
                     Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
+                }
+}}
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (idReserva.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el ID de la Reserva", "Información", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            idreserva = idReserva.getText();
+            res = Conexiones.Conexion.consulta("Select COUNT(idReserva) from esquema.Reserva where idReserva='" + Integer.parseInt(idreserva) + "'");
+            try {
+                while (res.next()) {
+                    cont = res.getInt(1);
+
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (cont >= 0) {
+                res = Conexion.consulta("Select * from esquema.Reserva where idReserva='" + Integer.parseInt(idreserva) + "'");
+                try {
+                    while (res.next()) {
+                        idrecorrido = res.getString(10);
+                    }
+                    if (idrecorrido == null) {
+                        JOptionPane.showMessageDialog(this, "No se ha podido verificar el recorrido de la reserva", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        panelMapa.repaint();
+                        res = Conexion.consulta("Select * from esquema.Recorrido where idRecorrido='" + Integer.parseInt(idreserva) + "'");
+
+                        while (res.next()) {
+                            puntoALat = Double.parseDouble(res.getString(2));
+                            puntoALong = Double.parseDouble(res.getString(3));
+                            puntoBLat = Double.parseDouble(res.getString(4));
+                            puntoBLong = Double.parseDouble(res.getString(5));
+                        }
+
+                        try {
+                            Maps.routeMap(puntoALat, puntoALong, puntoBLat, puntoBLong);
+                        } catch (ApiException | InterruptedException | IOException | URISyntaxException ex) {
+                            Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        try {
+                            browser.loadURL(Maps.routeMap(puntoALat, puntoALong, puntoBLat, puntoBLong));
+                        } catch (ApiException | InterruptedException | IOException | URISyntaxException ex) {
+                            Logger.getLogger(interfazMapa.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        browser.setBounds(1, 1, panelMapa.getWidth(), panelMapa.getHeight());
+                        panelMapa.add(browser);
+                    }
+                } catch (SQLException e) {
+                    System.out.println(e);
                 }
 
             } else {
-                JOptionPane.showMessageDialog(this, "No se ha cargado el archivo CSV", "ERROR", JOptionPane.ERROR_MESSAGE);
-            }
-
-        } catch (HeadlessException | IOException | NumberFormatException ee) {
-        } finally {
-            try {
-                //closing the reader
-                csvReader.close();
-            } catch (Exception ee) {
-                ee.printStackTrace();
+                JOptionPane.showMessageDialog(this, "No se ha podido verificar la reserva", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButton2ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(interfazMapa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(interfazMapa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(interfazMapa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(interfazMapa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new interfazMapa().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField idReserva;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel panelMapa;
     // End of variables declaration//GEN-END:variables
 }
